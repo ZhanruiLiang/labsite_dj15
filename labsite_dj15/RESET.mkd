@@ -1,0 +1,3 @@
+
+    python manage.py reset django_evolution
+    python manage.py syncdb

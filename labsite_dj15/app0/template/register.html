@@ -1,0 +1,18 @@
+{% extends "master.html" %}
+{% block title %}
+Register 
+{% endblock %}
+
+{% block body %}
+<h1> Register Form </h1>
+<div class="error">
+    <p> {{error}} </p>
+</div>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_ul }}
+    <button type="submit"> Register </button>
+    <input type="hidden" name="type" value="student" />
+    <input type="hidden" name="next" value="{{next}}"/>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        
+        <title> 
+            {% block title %}
+            {{title}}
+            {% endblock %}
+        </title>
+
+        {% block head_includes %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}/css/master.css" />
+        <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.8.3.min.js" ></script>
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        {% endblock %}
+    </body>
+    {% block foot_includes %}
+    {% endblock %}
+</html>
