@@ -1,0 +1,12 @@
+{% extends "master.html" %}
+{% block title %}
+Error
+{% endblock %}
+
+{% block body %}
+
+<div class="error_msg">
+    {{ error }}
+</div>
+<a href="{{next}}">Back</a>
+{% endblock %}

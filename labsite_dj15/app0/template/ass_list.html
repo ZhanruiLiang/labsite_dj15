@@ -1,0 +1,15 @@
+{% extends "master.html" %}
+
+{% block title %}
+Assignments
+{% endblock %}
+
+{% block body %}
+<ul>
+    {% for ass in asss %}
+    <li>
+    <a href="/m/ass/{{ass.id}}"> {{ass.title}} </a> due date: {{ass.duetime}}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

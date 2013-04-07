@@ -1,0 +1,14 @@
+<div class="nav-bar">
+    <div class="nav-user">
+        <span class="username">{{user.username}}</span>
+        |
+        <span class="usertype">{{user.usertype}}</span>
+    </div>
+    <div class="nav-list">
+        <ul class="nav-list">
+            {% for name, url in navItems %}
+            <li> <a href="{{url}}"> {{name}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

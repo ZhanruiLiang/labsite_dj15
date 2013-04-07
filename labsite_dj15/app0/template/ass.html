@@ -1,0 +1,22 @@
+{% extends "master.html" %}
+
+{% block title %}
+Assignment - {{ ass.title }}
+{% endblock %}
+
+{% block head_includes %}
+{{ block.super }}
+<link rel="stylesheet" href="{{ STATIC_URL }}/css/ass.css" />
+{% endblock %}
+
+{% block body %}
+<div class="ass">
+    <h1> {{ass.title}}</h1>
+    <h2> Due Date </h2>
+    <p> {{ ass.duetime }}</p>
+    <h2> Description </h2>
+    <p> {{ ass.description }} </p>
+    <h2> Upload Format </h3>
+    <p> {{ ass.spec_html }} </p>
+</div>
+{% endblock %}
