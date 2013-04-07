@@ -1,0 +1,8 @@
+ul.nav-list li {
+    list-style-type: none;
+    float: left;
+    margin-left: 10px;
+}
+div.nav-list {
+    border-bottom: solid 5px #000;
+}

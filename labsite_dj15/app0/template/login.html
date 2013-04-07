@@ -6,9 +6,6 @@ Login
 
 {% block body %}
 <h1> User Login </h1>
-<div class="error">
-    <p> {{error}} </p>
-</div>
 <form action="" method="post">
     {% csrf_token %}
     {{ form.as_ul }}

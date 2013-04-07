@@ -5,10 +5,13 @@ from django.conf import settings
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.views import login as _login, logout as _logout
-import account
 from django.contrib.auth.decorators import login_required
+from urlparse import urljoin
 import functools
 import datetime
+import spec
+import account
+from nav import render_nav_html
 
 # DEBUG purpose only
 def test(request):
@@ -18,21 +21,32 @@ def test(request):
         })))
 
 def make_response(request, templateName, contextDict):
+    if 'nav' not in contextDict:
+        contextDict['nav'] = render_nav_html(request.user)
     return HttpResponse(get_template(templateName).render(
         RequestContext(request, contextDict)))
+
+def error_response(request, msg):
+    return make_response(request, 'error.html', {
+        'error': msg,
+        'next': request.path,
+        })
 
 login_required = login_required(login_url=settings.LOGIN_URL)
 
 def usertype_only(type):
     def deco(view):
-        @functools.wraps
+        @functools.wraps(view)
         @login_required
         def new_view(request, *args, **kwargs):
             user = request.user
+            return view(request, *args, **kwargs)
             if user.usertype == type:
                 return view(request, *args, **kwargs)
             else:
-                return HttpResponse('Permission deny!')
+                return make_response(request, 'error.html', {
+                    'error': 'Permission deny!',
+                    })
         return new_view
     return deco
 
@@ -72,6 +86,40 @@ def login(request):
             )
 
 @login_required
+def show_ass(request, assID=None):
+    if assID:
+        assignment = spec.Assignment.objects.get(id=assID)
+        return make_response(request, 'ass.html', {'ass': assignment})
+    else:
+        asss = spec.Assignment.objects.all()
+        return make_response(request, 'ass_list.html', {'asss': asss})
+
+@csrf_protect
+@usertype_only('TA')
+def post_ass(request):
+    if request.method == 'GET':
+        form = spec.AssignmentCreationForm()
+        redirect_to = request.GET.get('next', settings.LOGOUT_REDIRECT_URL)
+        return make_response(request, 'addass.html', {
+            'form': form,
+            'next': redirect_to,
+            })
+    elif request.method == 'POST':
+        form = spec.AssignmentCreationForm(request.POST)
+        if form.is_valid():
+            assignment = form.save(commit=False)
+            success, msg = spec.make_ass_dir(assignment)
+            if success:
+                assignment.save()
+                redirect_to = urljoin(settings.ASSIGNMENT_URL, str(assignment.id))
+                return HttpResponseRedirect(redirect_to)
+            else:
+                return error_response(request, msg)
+        return make_response(request, 'addass.html', {
+            'form': form,
+            })
+
+@login_required
 def logout(request):
     return _logout(request, next_page=settings.LOGOUT_REDIRECT_URL, 
             template_name='logout.html')
@@ -82,12 +130,7 @@ def profile(request, userID=None):
     pass
 
 def home(request):
-    # show a user's home page, require login
-    user = request.user
-    if user.is_authenticated():
-        return HttpResponse('user: %s %s' % (request.user, datetime.datetime.today()))
-    else:
-        return HttpResponse('AnonymousUser')
+    return make_response(request, 'home.html', {})
 
 @usertype_only('student')
 def upload(request):
@@ -108,3 +151,4 @@ def submission(request, submissionID):
 def grade(request):
     # accept only POST method
     pass
+

@@ -111,6 +111,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_evolution',
     'labsite_dj15.app0',
     'django.contrib.admin',
     'django.contrib.admindocs',
@@ -144,8 +145,17 @@ LOGGING = {
         },
     }
 }
-LOGIN_REDIRECT_URL = '/m/my/'
-LOGIN_URL = '/m/login/'
-LOGOUT_REDIRECT_URL = '/m/my/'
-
 AUTH_USER_MODEL = 'app0.User'
+
+# URL
+HOME_URL = '/m/my/'
+LOGIN_REDIRECT_URL = HOME_URL
+LOGIN_URL = '/m/login/'
+LOGOUT_REDIRECT_URL = HOME_URL
+LOGOUT_URL = '/m/logout/'
+ASSIGNMENT_BASE_DIR = os.path.join(MEDIA_ROOT, 'assignments/')
+ASSIGNMENT_URL = '/m/ass/'
+GRADE_URL = '/m/grade/'
+REGISTER_URL = '/m/register/'
+SUBMISSIONS_URL = '/m/subm/'
+POST_URL = '/m/post'
