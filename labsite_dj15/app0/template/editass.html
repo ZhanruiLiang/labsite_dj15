@@ -1,0 +1,17 @@
+{% extends "master.html" %}
+
+{% block title %}
+Edit Assignment
+{% endblock %}
+
+{% block body %}
+<h1> Edit Assignment</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table}}
+    </table>
+    <button type="submit"> Post </button>
+    <input type="hidden" name="next" value="{{next}}"/>
+</form>
+{% endblock %}

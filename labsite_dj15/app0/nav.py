@@ -19,7 +19,6 @@ def render_nav_html(user):
         if user.usertype == 'TA':
             navItems.extend([
                 ('Post', settings.POST_URL),
-                ('Grade', settings.GRADE_URL),
                 ])
         elif user.usertype == 'student':
             navItems.extend([

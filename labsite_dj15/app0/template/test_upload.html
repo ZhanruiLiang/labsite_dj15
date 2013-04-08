@@ -1,0 +1,14 @@
+{% extends "master.html" %}
+
+{% block title %}
+Test upload
+{% endblock %}
+
+{% block body %}
+<p> {{msg}} </p>
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit"> Upload </button>
+</form>
+{% endblock %}

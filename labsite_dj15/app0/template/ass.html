@@ -7,16 +7,48 @@ Assignment - {{ ass.title }}
 {% block head_includes %}
 {{ block.super }}
 <link rel="stylesheet" href="{{ STATIC_URL }}/css/ass.css" />
+<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/ass.coffee"></script>
 {% endblock %}
 
 {% block body %}
+<script type="text/javascript">
+    assID = "{{ass.id}}";
+</script>
 <div class="ass">
     <h1> {{ass.title}}</h1>
+
     <h2> Due Date </h2>
     <p> {{ ass.duetime }}</p>
+
     <h2> Description </h2>
     <p> {{ ass.description }} </p>
+
     <h2> Upload Format </h3>
-    <p> {{ ass.spec_html }} </p>
+    <p> {{ ass.spec.html }} </p>
+    <p> Download <a href="{{ass.spec_example_url}}">Example</a></p>
+
+    <h2> Upload </h2>
+    <div id="error-list" class="error-list" ></div>
+    {% if user.usertype == "TA" %}
+        <p>
+            Totally {{ submissions | length }} submissions.
+        </p>
+        <a href="/m/list/{{ass.id}}/"> Grade this assignment </a>
+        <br />
+        <a href="/m/edit/{{ass.id}}/"> Edit this assignment </a>
+    {% elif user.usertype == "student" %}
+        <div id="submissions">
+        </div>
+
+        <form id="upload-form" action="/m/upload/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="assID" value="{{ass.id}}" />
+            <input type="hidden" name="next" value="/m/ass/{{ass.id}}/"/>
+            
+            <button id="upload-button" type="submit"> Upload </button>
+            <span id="upload-status"></span>
+        </form>
+    {% endif %}
 </div>
 {% endblock %}

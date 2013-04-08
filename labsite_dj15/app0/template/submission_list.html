@@ -1,0 +1,18 @@
+{% if submissions %}
+    Submissions:
+    <table>
+    <tr>
+        <th>ID</th> <th>Filename</th> <th>Time</th>
+    </tr>
+    {% for sub in submissions %}
+        <tr data-sid="{{sub.id}}">
+            <td>{{ sub.id }}</td>
+            <td>{{ sub.filename }}</td>
+            <td>{{ sub.time }}</td>
+            <td><button class="delete" data-sid="{{sub.id}}">delete</button></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    You have no submissions on this assignment.
+{% endif %}
