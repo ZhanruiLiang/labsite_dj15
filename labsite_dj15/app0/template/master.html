@@ -1,4 +1,5 @@
 {% load static %}
+{% load dajaxice_templatetags %}
 {% get_static_prefix as STATIC_URL %}
 <!DOCTYPE html>
 <html>
@@ -14,6 +15,10 @@
         {% block head_includes %}
         <link rel="stylesheet" href="{{ STATIC_URL }}/css/master.css" />
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.8.3.min.js" ></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookies.2.2.0.min.js" ></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}/js/coffee-script.js"></script>
+        <script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/ajax.coffee"></script>
+        {% dajaxice_js_import %}
         {% endblock %}
     </head>
     <body>

@@ -6,19 +6,23 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.views import login as _login, logout as _logout
 from django.contrib.auth.decorators import login_required
+from dajaxice.decorators import dajaxice_register
 from urlparse import urljoin
 import functools
 import datetime
 import spec
 import account
+import json
 from nav import render_nav_html
 
 # DEBUG purpose only
 def test(request):
-    return HttpResponse(get_template('test.html').render(
-        RequestContext(request, {
-            'title': 'Test',
-        })))
+    return make_response(request, 'test_ajax.html', {})
+
+@dajaxice_register(method='GET', name='ajax_date')
+def ajax_date(request):
+    if request.is_ajax():
+        return json.dumps(str(datetime.datetime.today()))
 
 def make_response(request, templateName, contextDict):
     if 'nav' not in contextDict:

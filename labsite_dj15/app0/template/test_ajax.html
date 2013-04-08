@@ -1,0 +1,12 @@
+{% extends "master.html" %}
+{% block body %}
+
+<script type="text/coffeescript">
+    setInterval (()->
+        Dajaxice.ajax_date (data) ->
+            $("#time").html data
+        ), 1000
+   
+</script>
+<span id="time">unknown</span>
+{% endblock %}
