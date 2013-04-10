@@ -5,8 +5,9 @@ Post Assignment
 {% endblock %}
 
 {% block body %}
+<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/post.coffee"></script>
 <h1> Post Assignment</h1>
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <table>
         {{ form.as_table}}

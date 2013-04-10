@@ -3,8 +3,6 @@ from django.template import Template, Context, RequestContext
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 
-Template = get_template('nav.html')
-
 def render_nav_html(user):
     navItems = [
             ('Home', settings.HOME_URL),
@@ -22,9 +20,9 @@ def render_nav_html(user):
                 ])
         elif user.usertype == 'student':
             navItems.extend([
-                ('Submissions', settings.SUBMISSIONS_URL),
+                # ('Submissions', settings.SUBMISSIONS_URL),
                 ])
         navItems.extend([
             ('Logout', settings.LOGOUT_URL),
             ])
-    return Template.render(Context({'navItems': navItems, 'user': user}))
+    return get_template('nav.html').render(Context({'navItems': navItems, 'user': user}))

@@ -2,6 +2,7 @@ from django.db import models
 from account import User
 from spec import Assignment
 from django import forms
+from errors import *
 import os
 
 class Submission(models.Model):
@@ -37,16 +38,16 @@ class UploadForm(forms.Form):
             help_text='maxsize: %d MB' % (MAX_SIZE/2**20),
             )
 
-class UploadError(Exception): 
-    def html(self):
-        return self.message
+# uploading = set()
 
 def upload(user, assID, file):
     # return: submission
     try:
         ass = Assignment.objects.get(id=assID)
     except:
-        raise UploadError('Assignment with this id does not exist')
+        raise CheckError('Assignment with this id does not exist')
+    if file.size > MAX_SIZE:
+        raise UploadError('File too large.')
     name = '{}-{}-{}'.format(assID, user.studentID, file.name)
     path = os.path.join(ass.dest_dir, name)
     with open(path, 'wb') as outf:

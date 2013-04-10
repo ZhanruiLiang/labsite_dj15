@@ -1,4 +1,25 @@
-div.ass {
-    width: 800px;
-    margin: 0 auto;
+.error-list {
+    /* background-color: #e44; */
+    font-weight: bold;
+    padding: 5px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 3px;
 }
+
+div#main {
+    width: 1024px;
+    margin: 0 auto;
+    padding: 20px 30px;
+}
+
+h1 {
+    background-color: #dafbea;
+    padding: 5px 10px;
+    border-left: 12px solid #222;
+    border-radius: 5px;
+}
+
+h2, h3 {
+    padding: 3px 10px;
+}
+

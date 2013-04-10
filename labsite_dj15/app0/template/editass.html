@@ -5,6 +5,7 @@ Edit Assignment
 {% endblock %}
 
 {% block body %}
+<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/post.coffee"></script>
 <h1> Edit Assignment</h1>
 <form action="" method="post">
     {% csrf_token %}

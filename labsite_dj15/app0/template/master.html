@@ -14,18 +14,25 @@
 
         {% block head_includes %}
         <link rel="stylesheet" href="{{ STATIC_URL }}/css/master.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}/ui-lightness/jquery-ui-1.10.2.custom.min.css" />
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.8.3.min.js" ></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.form.min.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookies.2.2.0.min.js" ></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/js/coffee-script.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-ui-1.10.2.custom.min.js"></script>
         <script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/ajax.coffee"></script>
         {% dajaxice_js_import %}
         {% endblock %}
     </head>
     <body>
         {{ nav | safe }}
+        <div id="main">
         {% block body %}
         {% endblock %}
+        </div>
+        <div id="footer">
+            Please contact ray040123@gmail.com if you meet problems about this site.
+        </div>
     </body>
     {% block foot_includes %}
     {% endblock %}

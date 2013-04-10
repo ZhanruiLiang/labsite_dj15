@@ -1,8 +1,104 @@
 ul.nav-list li {
     list-style-type: none;
     float: left;
-    margin-left: 10px;
+    /* display: inline; */
+    margin-left: 30px;
 }
+
 div.nav-list {
-    border-bottom: solid 5px #000;
+    /* border-bottom: solid 5px #000; */
 }
+
+#logo {
+    font-size: 200%;
+    font-family: serif;
+    float: left;
+}
+
+div#nav-bar {
+    background: #fff;
+    min-height: 30px;
+    position: fixed; top: 0; left: 0; right: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 5px;
+
+    background-color: #EEE;
+    /* background-image: linear-gradient(to bottom, #FFF, #888); */
+    /* background-repeat: repeat-x; */
+    border-color: #666;
+}
+
+.nav-inner a {
+    text-decoration: none;
+    color: #222;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.nav-inner a:hover {
+    transition-property: background-color;
+    transition-duration: 0.8s;
+    background-color: #aaa;
+}
+
+.nav-inner {
+    padding: 3px 5px;
+}
+
+.nav-user {
+    float: right;
+    padding: 3px 10px;
+}
+
+div#nav-banner {
+    min-height: 60px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* position: absolute; */
+    display: block;
+}
+
+body {
+    background-color: #34373f;
+}
+
+div#main{
+    box-shadow: 0px 2px 2px 4px rgba(0, 0, 0, .8);
+    background-color: #fff;
+}
+
+table {
+    /* background: #faf9bd; */
+    border-collapse:collapse;
+    border-spacing: 0;
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-collapse: separate;
+    border-color: #DDDDDD #DDDDDD #DDDDDD -moz-use-text-color;
+    border-image: none;
+    border-radius: 4px 4px 4px 4px;
+    border-style: solid solid solid none;
+    border-width: 1px 1px 1px 0;
+}
+
+th, td {
+    border-left: 1px solid #DDDDDD;
+    border-top: 1px solid #DDDDDD;
+    line-height: 20px;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+#footer {
+    color: #444;
+    padding: 2px 12px;
+    background: #ccc;
+    position: fixed; bottom: 0; left: 0; right: 0;
+}
+

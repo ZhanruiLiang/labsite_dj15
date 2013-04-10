@@ -18,14 +18,14 @@ Assignment - {{ ass.title }}
     <h1> {{ass.title}}</h1>
 
     <h2> Due Date </h2>
-    <p> {{ ass.duetime }}</p>
+    <p> {{ ass.duetime|date:"Y-m-d H:i"}}</p>
 
     <h2> Description </h2>
-    <p> {{ ass.description }} </p>
+    <p> {{ ass.description | safe }} </p>
 
     <h2> Upload Format </h3>
-    <p> {{ ass.spec.html }} </p>
-    <p> Download <a href="{{ass.spec_example_url}}">Example</a></p>
+    <p> <pre>{{ ass.spec.html | safe }}</pre> </p>
+    <p> Download the <a href="{{ass.example.url}}">Example</a></p> .
 
     <h2> Upload </h2>
     <div id="error-list" class="error-list" ></div>
@@ -37,6 +37,8 @@ Assignment - {{ ass.title }}
         <br />
         <a href="/m/edit/{{ass.id}}/"> Edit this assignment </a>
     {% elif user.usertype == "student" %}
+    {% endif %}
+
         <div id="submissions">
         </div>
 
@@ -49,6 +51,5 @@ Assignment - {{ ass.title }}
             <button id="upload-button" type="submit"> Upload </button>
             <span id="upload-status"></span>
         </form>
-    {% endif %}
 </div>
 {% endblock %}

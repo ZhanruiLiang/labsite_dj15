@@ -9,15 +9,17 @@ from django.contrib.auth.decorators import login_required
 from dajaxice.decorators import dajaxice_register
 from dajaxice.utils import deserialize_form
 from urlparse import urljoin
+from time import sleep
 import functools
 import datetime
 import json
 import spec
 
 import account
-from upload import UploadError, UploadForm, Submission, upload as _upload
-from check import CheckError, check_submission
+from upload import UploadForm, Submission, upload as _upload
+from check import check_submission
 from nav import render_nav_html
+from errors import *
 
 # DEBUG purpose only
 def make_test_view(template_name):
@@ -149,7 +151,7 @@ def post_ass(request):
             'next': redirect_to,
             })
     elif request.method == 'POST':
-        form = spec.AssignmentCreationForm(request.POST)
+        form = spec.AssignmentCreationForm(request.POST, request.FILES)
         if form.is_valid():
             assignment = form.save(commit=False)
             success, msg = spec.make_ass_dir(assignment)
@@ -161,7 +163,7 @@ def post_ass(request):
                 return error_response(request, msg)
         return make_response(request, 'addass.html', {
             'form': form,
-            'next': request.GET['next'],
+            'next': request.POST['next'],
             })
 
 @csrf_protect
@@ -176,7 +178,7 @@ def edit_ass(request, assID):
             })
     elif request.method == 'POST':
         assignment = spec.Assignment.objects.get(id=assID)
-        form = spec.AssignmentModifyForm(request.POST, instance=assignment)
+        form = spec.AssignmentModifyForm(request.POST, request.FILES, instance=assignment)
         if form.is_valid():
             success, msg = spec.make_ass_dir(assignment)
             if success:
@@ -216,6 +218,7 @@ def wrap_json(view):
 def upload(request):
     # upload/make a submission, require student user.
     if request.method == 'POST':
+        sleep(1)
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES['file']
@@ -232,20 +235,15 @@ def upload(request):
                     })
             except UploadError as err:
                 return json.dumps({
-                    'code': 1,
-                    'message': err.html(),
-                    })
-            except CheckError as err:
-                return json.dumps({
-                    'code': 2,
+                    'code': err.code,
                     'message': err.html(),
                     })
         return json.dumps({
-            'code': 3,
+            'code': 1,
             'message': form.errors,
             })
     return json.dumps({
-        'code': 2,
+        'code': 1,
         'message': 'method is not POST',
         })
 

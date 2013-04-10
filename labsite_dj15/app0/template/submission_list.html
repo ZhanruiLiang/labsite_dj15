@@ -2,7 +2,7 @@
     Submissions:
     <table>
     <tr>
-        <th>ID</th> <th>Filename</th> <th>Time</th>
+        <th>ID</th> <th>Filename</th> <th>Time</th> <th> delete </th>
     </tr>
     {% for sub in submissions %}
         <tr data-sid="{{sub.id}}">
@@ -14,5 +14,5 @@
     {% endfor %}
     </table>
 {% else %}
-    You have no submissions on this assignment.
+    You have not submitted any things on this assignment.
 {% endif %}

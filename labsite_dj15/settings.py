@@ -2,6 +2,7 @@
 import os
 
 DEBUG = True
+# DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -156,7 +157,7 @@ LOGIN_REDIRECT_URL = HOME_URL
 LOGIN_URL = '/m/login/'
 LOGOUT_REDIRECT_URL = HOME_URL
 LOGOUT_URL = '/m/logout/'
-ASSIGNMENT_BASE_DIR = os.path.join(MEDIA_ROOT, 'assignments/')
+ASSIGNMENT_BASE_DIR = relpath('assignments/')
 ASSIGNMENT_URL = '/m/ass/'
 GRADE_URL = '/m/grade/'
 REGISTER_URL = '/m/register/'
