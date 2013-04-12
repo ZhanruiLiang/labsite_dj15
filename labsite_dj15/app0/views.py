@@ -6,8 +6,8 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.views import login as _login, logout as _logout
 from django.contrib.auth.decorators import login_required
-from dajaxice.decorators import dajaxice_register
-from dajaxice.utils import deserialize_form
+# from dajaxice.decorators import dajaxice_register
+# from dajaxice.utils import deserialize_form
 from urlparse import urljoin
 from time import sleep
 import functools
@@ -20,6 +20,13 @@ from upload import UploadForm, Submission, upload as _upload
 from check import check_submission
 from nav import render_nav_html
 from errors import *
+
+def wrap_json(view):
+    @functools.wraps(view)
+    def new_view(request, *args, **kwargs):
+        json = view(request, *args, **kwargs)
+        return HttpResponse(json, 'json')
+    return new_view
 
 # DEBUG purpose only
 def make_test_view(template_name):
@@ -41,12 +48,13 @@ def test_upload(request):
         'msg': msg,
         })
 
-@dajaxice_register(method='GET', name='ajax_date')
+# @dajaxice_register(method='GET', name='ajax_date')
 def ajax_date(request):
     if request.is_ajax():
         return json.dumps(str(datetime.datetime.today()))
 
-@dajaxice_register(method='GET', name='delete_submission')
+# @dajaxice_register(method='GET', name='delete_submission')
+@wrap_json
 @login_required
 def delete_submission(request, submissionID):
     user = request.user
@@ -205,13 +213,6 @@ def profile(request, userID=None):
 def home(request):
     return make_response(request, 'home.html', {})
 
-def wrap_json(view):
-    @functools.wraps(view)
-    def new_view(request, *args, **kwargs):
-        json = view(request, *args, **kwargs)
-        return HttpResponse(json, 'json')
-    return new_view
-
 # @dajaxice_register(method='POST', name='upload')
 @wrap_json
 @usertype_only('student')
@@ -247,7 +248,8 @@ def upload(request):
         'message': 'method is not POST',
         })
 
-@dajaxice_register(method='GET', name='submission_list')
+# @dajaxice_register(method='GET', name='submission_list')
+@wrap_json
 @login_required
 def submission_list(request, assID):
     # list a user's submissions for the assignment
