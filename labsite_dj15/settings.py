@@ -72,7 +72,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'dajaxice.finders.DajaxiceFinder',
+    # 'dajaxice.finders.DajaxiceFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -117,7 +117,7 @@ INSTALLED_APPS = (
     'labsite_dj15.app0',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'dajaxice',
+    # 'dajaxice',
     # 'dajax',
 )
 

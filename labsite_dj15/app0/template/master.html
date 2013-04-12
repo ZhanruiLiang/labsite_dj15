@@ -1,5 +1,5 @@
 {% load static %}
-{% load dajaxice_templatetags %}
+{# load dajaxice_templatetags #}
 {% get_static_prefix as STATIC_URL %}
 <!DOCTYPE html>
 <html>
@@ -20,8 +20,10 @@
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookies.2.2.0.min.js" ></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/js/coffee-script.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-ui-1.10.2.custom.min.js"></script>
+        {% comment %}
         <script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/ajax.coffee"></script>
         {% dajaxice_js_import %}
+        {% endcomment %}
         {% endblock %}
     </head>
     <body>

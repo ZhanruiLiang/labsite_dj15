@@ -2,3 +2,7 @@
 *.swo
 *.pyc
 *.pyo
+*.tar.gz
+*.zip
+labsite_dj15/static/
+labsite_dj15/sample_upload/
