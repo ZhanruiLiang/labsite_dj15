@@ -10,11 +10,12 @@
                 {% endfor %}
             </ul>
         </span>
-        <span class="nav-user">
-            <span class="username">{{user.username}}</span>
-            ,
-            <span class="usertype">{{user.usertype}}</span>
-        </span>
+        {% if user.is_authenticated %}
+            <span class="nav-user">
+                <span class="username">{{user.username}}</span>
+                <span class="usertype">{{user.usertype}}</span>
+            </span>
+        {% endif %}
     </div>
 </div>
 <div id="nav-banner">

@@ -1,0 +1,29 @@
+#preview {
+    float: right;
+    width: 58%;
+    padding: 0;
+    margin: 0;
+}
+#desc-preview h1{
+    background-color: #bfd1e9;
+    padding: 5px 10px;
+    border-left: 12px solid #222;
+    border-radius: 5px;
+}
+#desc-preview {
+    padding: 20px 30px;
+    border: solid 1px rgba(0, 0, 0, .5);
+}
+#form {
+    float: left;
+    width: 40%;
+    padding: 0;
+    margin: 0;
+}
+
+#form table {
+    width: 98%;
+}
+#form textarea {
+    width: 100%;
+}

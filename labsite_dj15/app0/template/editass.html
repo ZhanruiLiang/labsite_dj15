@@ -1,18 +1,5 @@
-{% extends "master.html" %}
+{% extends "addass.html" %}
 
 {% block title %}
 Edit Assignment
-{% endblock %}
-
-{% block body %}
-<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/post.coffee"></script>
-<h1> Edit Assignment</h1>
-<form action="" method="post">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table}}
-    </table>
-    <button type="submit"> Post </button>
-    <input type="hidden" name="next" value="{{next}}"/>
-</form>
 {% endblock %}

@@ -12,20 +12,19 @@ Assignment - {{ ass.title }}
 
 {% block body %}
 <script type="text/javascript">
-    assID = "{{ass.id}}";
+    g_assID = "{{ass.id}}";
 </script>
 <div class="ass">
-    <h1> {{ass.title}}</h1>
+    <h1> {{ass.title}} </h1>
+    due date: {{ ass.duetime|date:"Y-m-d H:i"}}
 
-    <h2> Due Date </h2>
-    <p> {{ ass.duetime|date:"Y-m-d H:i"}}</p>
+    <div id="desc">
+    {{ ass.description }}
+    </div>
 
-    <h2> Description </h2>
-    <p> {{ ass.description | safe }} </p>
-
-    <h2> Upload Format </h3>
+    <h2> Upload Format </h2>
     <p> <pre>{{ ass.spec.html | safe }}</pre> </p>
-    <p> Download the <a href="{{ass.example.url}}">Example</a></p> .
+    <p> You can download the <a href="{{ass.example.url}}">example</a> for reference.</p> .
 
     <h2> Upload </h2>
     <div id="error-list" class="error-list" ></div>

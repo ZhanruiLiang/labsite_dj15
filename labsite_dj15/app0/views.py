@@ -53,18 +53,6 @@ def ajax_date(request):
     if request.is_ajax():
         return json.dumps(str(datetime.datetime.today()))
 
-# @dajaxice_register(method='GET', name='delete_submission')
-@wrap_json
-@login_required
-def delete_submission(request, submissionID):
-    user = request.user
-    try:
-        submission = Submission.objects.get(id=submissionID, user=user)
-        submission.delete()
-    except:
-        return json.dumps(False)
-    return json.dumps(True)
-
 def make_response(request, templateName, contextDict):
     if 'nav' not in contextDict:
         contextDict['nav'] = render_nav_html(request.user)
@@ -127,7 +115,7 @@ def login(request):
         redirect_to = request.POST.get('next', redirect_to)
     return _login(request, template_name='login.html', 
             authentication_form=account.LoginForm,
-            extra_context={'next': redirect_to},
+            extra_context={'next': redirect_to, 'nav': render_nav_html(request.user)},
             )
 
 @login_required
@@ -280,4 +268,23 @@ def submission(request, submissionID):
 def grade(request):
     # accept only POST method
     pass
+
+# @dajaxice_register(method='GET', name='delete_submission')
+@wrap_json
+@login_required
+def delete_submission(request, submissionID):
+    user = request.user
+    try:
+        submission = Submission.objects.get(id=submissionID, user=user)
+        submission.delete()
+    except:
+        return json.dumps(False)
+    return json.dumps(True)
+
+@usertype_only('TA')
+def delete_ass(request, assID):
+    if request.method == 'GET':
+        assignment = spec.Assignment.objects.get(id=assID)
+        assignment.delete()
+        return HttpResponseRedirect(settings.ASSIGNMENT_URL)
 

@@ -1,6 +1,6 @@
 $ ->
   updateList = -> $.ajax
-    url: '/m/submission_list/' + assID + '/'
+    url: '/m/submission_list/' + g_assID + '/'
     method: 'GET'
     success: (data) ->
       $("#submissions").html data.list
@@ -33,6 +33,7 @@ $ ->
       $('#upload-status').html "Uploading..."
       $('#error-list').hide()
       $('#upload-button').hide()
+    timeout: 60000
     error: (jqXHR, textStatus, errorThrown) ->
       $('#upload-status').html 'Uploaded failed: ' + textStatus + '/' + errorThrown
       $('#upload-button').show()
@@ -45,6 +46,9 @@ $ ->
         updateError data.message
         $('#upload-status').html 'Upload failed.'
       $('#upload-button').show()
+
+  convert = new Markdown.getSanitizingConverter().makeHtml
+  $('#desc').html convert $('#desc').html()
 
   updateList()
   updateError ''

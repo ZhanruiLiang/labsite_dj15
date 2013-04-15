@@ -5,14 +5,23 @@ Post Assignment
 {% endblock %}
 
 {% block body %}
+<link rel="stylesheet" href="{{STATIC_URL}}css/post.css" />
 <script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/post.coffee"></script>
-<h1> Post Assignment</h1>
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table}}
-    </table>
-    <button type="submit"> Post </button>
-    <input type="hidden" name="next" value="{{next}}"/>
-</form>
+<div class="wrap">
+<div id="form">
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table}}
+        </table>
+        <button type="submit"> Post </button>
+        <input type="hidden" name="next" value="{{next}}"/>
+    </form>
+</div>
+<div id="preview">
+    <h2>Description Preview</h2>
+    <div id="desc-preview">
+    </div>
+</div>
+</div>
 {% endblock %}

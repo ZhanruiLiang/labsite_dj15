@@ -13,16 +13,20 @@
         </title>
 
         {% block head_includes %}
-        <link rel="stylesheet" href="{{ STATIC_URL }}/css/master.css" />
-        <link rel="stylesheet" href="{{ STATIC_URL }}/ui-lightness/jquery-ui-1.10.2.custom.min.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/master.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/nav.css" />
+        <!-- <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css" /> -->
+        <link rel="stylesheet" href="{{ STATIC_URL }}ui-lightness/jquery-ui-1.10.2.custom.min.css" />
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.8.3.min.js" ></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.form.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookies.2.2.0.min.js" ></script>
+        <!-- <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookies.2.2.0.min.js" ></script> -->
         <script type="text/javascript" src="{{ STATIC_URL }}/js/coffee-script.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-ui-1.10.2.custom.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}/js/Markdown.Converter.js" ></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}/js/Markdown.Sanitizer.js" ></script>
         {% comment %}
-        <script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/ajax.coffee"></script>
-        {% dajaxice_js_import %}
+            <script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/ajax.coffee"></script>
+            {% dajaxice_js_import %}
         {% endcomment %}
         {% endblock %}
     </head>
@@ -33,7 +37,14 @@
         {% endblock %}
         </div>
         <div id="footer">
-            Please contact ray040123@gmail.com if you meet problems about this site.
+            <span class="info">Please contact ray040123@gmail.com if you meet problems about this site.</span>
+            <div class="thanks">
+                Thanks to:
+                <ul>
+                    <li><a href="https://www.djangoproject.com/">Django web framework</a></li>
+                    <li><a href="http://www.glyphicons.com">Glyph Icons</a></li>
+                </ul>
+            </div>
         </div>
     </body>
     {% block foot_includes %}

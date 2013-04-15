@@ -1,72 +1,18 @@
-ul.nav-list li {
-    list-style-type: none;
-    float: left;
-    /* display: inline; */
-    margin-left: 30px;
-}
-
-div.nav-list {
-    /* border-bottom: solid 5px #000; */
-}
-
 #logo {
     font-size: 200%;
     font-family: serif;
     float: left;
 }
 
-div#nav-bar {
-    background: #fff;
-    min-height: 30px;
-    position: fixed; top: 0; left: 0; right: 0;
-    width: 100%;
-    z-index: 1000;
-    padding: 5px;
-
-    background-color: #EEE;
-    /* background-image: linear-gradient(to bottom, #FFF, #888); */
-    /* background-repeat: repeat-x; */
-    border-color: #666;
-}
-
-.nav-inner a {
-    text-decoration: none;
-    color: #222;
-    padding: 5px;
-    border-radius: 3px;
-}
-
-.nav-inner a:hover {
-    transition-property: background-color;
-    transition-duration: 0.8s;
-    background-color: #aaa;
-}
-
-.nav-inner {
-    padding: 3px 5px;
-}
-
-.nav-user {
-    float: right;
-    padding: 3px 10px;
-}
-
-div#nav-banner {
-    min-height: 60px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    /* position: absolute; */
-    display: block;
-}
-
 body {
-    background-color: #34373f;
+    /* background-color: #34373f; */
+    background-color: #7187aa;
 }
 
 div#main{
-    box-shadow: 0px 2px 2px 4px rgba(0, 0, 0, .8);
+    /* box-shadow: 0px 2px 2px 4px rgba(0, 0, 0, .8); */
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 5px;
     background-color: #fff;
     padding-bottom: 40px;
 }
@@ -97,9 +43,44 @@ th, td {
 }
 
 #footer {
-    color: #444;
-    padding: 2px 12px;
-    background: #ccc;
-    position: fixed; bottom: 0; left: 0; right: 0;
+    color: #DDD;
+    width: 100%;
+    position: fixed; left: 0; right: 0;
+    min-height: 100px;
+}
+#footer .thanks{
+    text-shadow: 3px 2px 8px #555;
+    padding: 12px 12px;
+    font-size: 80%;
+    position: fixed;
+    left: 800px;
+}
+#footer .info {
+    text-shadow: 3px 2px 8px #666;
+    padding: 12px 12px;
+    float: left;
+}
+#footer .thanks a{
+    text-decoration: none;
+    color: #fff;
+}
+#footer .thanks a:hover{
+    text-decoration: none;
+    color: #ff0;
 }
 
+#footer .thanks ul {
+    list-style-type: circle;
+}
+
+.errorlist {
+    color: #d88;
+}
+
+div#main {
+    padding: 20px 30px;
+}
+
+.wrap {
+    overflow: auto;
+}

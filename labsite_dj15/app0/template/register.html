@@ -7,7 +7,9 @@ Register
 <h1> Register Form </h1>
 <form action="" method="post">
     {% csrf_token %}
-    {{ form.as_ul }}
+    <table>
+    {{ form.as_table }}
+    </table>
     <button type="submit"> Register </button>
     <input type="hidden" name="type" value="student" />
     <input type="hidden" name="next" value="{{next}}"/>
