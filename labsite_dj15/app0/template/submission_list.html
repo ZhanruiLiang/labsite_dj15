@@ -2,14 +2,25 @@
     Submissions:
     <table>
     <tr>
-        <th>ID</th> <th>Filename</th> <th>Time</th> <th> delete </th>
+        <th>ID</th>
+        {% if user.usertype == "TA" %}
+        <th>User</th>
+        {% endif %}
+        <th>Filename</th>
+        <th>Time</th> 
+        <th>Action</th>
     </tr>
     {% for sub in submissions %}
         <tr data-sid="{{sub.id}}">
             <td>{{ sub.id }}</td>
+            {% if user.usertype == "TA" %}
+            <td> {{sub.user.username}}/{{sub.user.studentID}} </td>
+            {% endif %}
             <td>{{ sub.filename }}</td>
             <td>{{ sub.time }}</td>
-            <td><button class="delete" data-sid="{{sub.id}}">delete</button></td>
+            <td>
+                <button class="delete" data-sid="{{sub.id}}">delete</button>
+            </td>
         </tr>
     {% endfor %}
     </table>

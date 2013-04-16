@@ -6,20 +6,21 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.views import login as _login, logout as _logout
 from django.contrib.auth.decorators import login_required
-# from dajaxice.decorators import dajaxice_register
-# from dajaxice.utils import deserialize_form
 from urlparse import urljoin
 from time import sleep
 import functools
 import datetime
 import json
 import spec
+import logging
 
 import account
 from upload import UploadForm, Submission, upload as _upload
 from check import check_submission
 from nav import render_nav_html
 from errors import *
+
+logger = logging.getLogger(__name__)
 
 def wrap_json(view):
     @functools.wraps(view)
@@ -48,7 +49,6 @@ def test_upload(request):
         'msg': msg,
         })
 
-# @dajaxice_register(method='GET', name='ajax_date')
 def ajax_date(request):
     if request.is_ajax():
         return json.dumps(str(datetime.datetime.today()))
@@ -122,15 +122,9 @@ def login(request):
 def show_ass(request, assID=None):
     if assID:
         assignment = spec.Assignment.objects.get(id=assID)
-        submissions = list(sorted(
-            assignment.submission_set.filter(user=request.user),
-            key=(lambda s:s.time), 
-            reverse=True,
-            ))
         return make_response(request, 'ass.html', {
             'ass': assignment, 
             'form': UploadForm(),
-            'submissions': submissions,
             })
     else:
         asss = spec.Assignment.objects.all()
@@ -203,7 +197,6 @@ def profile(request, userID=None):
 def home(request):
     return make_response(request, 'home.html', {})
 
-# @dajaxice_register(method='POST', name='upload')
 @wrap_json
 @usertype_only('student')
 def upload(request):
@@ -238,21 +231,21 @@ def upload(request):
         'message': 'method is not POST',
         })
 
-# @dajaxice_register(method='GET', name='submission_list')
 @wrap_json
 @login_required
 def submission_list(request, assID):
     # list a user's submissions for the assignment
     user = request.user
     assignment = spec.Assignment.objects.get(id=assID)
-    submissions = list(sorted(
-        assignment.submission_set.filter(user=request.user),
-        key=(lambda s:s.time), 
-        reverse=True,
-        ))
+    if request.user.usertype == 'TA':
+        submissions = assignment.submission_set.extra(order_by=('-time',))
+    else:
+        submissions = assignment.submission_set.filter(
+                user=request.user).extra(order_by=('-time',))
     return json.dumps({
         'list': get_template('submission_list.html').render(Context(dict(
-            submissions=submissions
+            submissions=submissions,
+            user=user,
             ))),
         })
 
@@ -271,15 +264,19 @@ def grade(request):
     # accept only POST method
     pass
 
-# @dajaxice_register(method='GET', name='delete_submission')
 @wrap_json
 @login_required
 def delete_submission(request, submissionID):
     user = request.user
     try:
-        submission = Submission.objects.get(id=submissionID, user=user)
+        if user.usertype == 'TA':
+            submission = Submission.objects.get(id=submissionID)
+        else:
+            submission = Submission.objects.get(id=submissionID, user=user)
         submission.delete()
-    except:
+        # logger.log('Delete submission #{}'.format(submission.id))
+    except Exception as e:
+        # logger.log('Failed to delete submission #{}\n{}'.format( submissionID, e))
         return json.dumps(False)
     return json.dumps(True)
 

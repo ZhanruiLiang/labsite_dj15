@@ -4,19 +4,16 @@ $ ->
     method: 'GET'
     success: (data) ->
       $("#submissions").html data.list
-      buttons = $("#submissions button.delete")
-      for button in buttons
-        button = $ button
-        sid = button.data "sid"
-        do (sid) ->
-          button.click -> $.ajax
-            url: '/m/delete_submission/' + sid + '/'
-            success: (success) ->
-              if success
-                updateList()
-              else
-                updateError "Server error, failed to delete."
-
+      $("#submissions button.delete").click (event)->
+        sid = $(event.target).data "sid"
+        $.ajax
+          method: 'GET'
+          url: '/m/delete_submission/' + sid + '/'
+          success: (success) ->
+            if success
+              updateList()
+            else
+              updateError "Server error, failed to delete."
 
   updateError = (message) ->
     errorList = $('#error-list')

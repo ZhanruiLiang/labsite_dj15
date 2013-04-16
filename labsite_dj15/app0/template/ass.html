@@ -27,9 +27,6 @@ Assignment - {{ ass.title }}
     <h2> Upload </h2>
     <div id="error-list" class="error-list" ></div>
     {% if user.usertype == "TA" %}
-        <p>
-            Totally {{ submissions | length }} submissions.
-        </p>
         <a href="/m/list/{{ass.id}}/"> Grade this assignment </a>
         <br />
         <a href="/m/edit/{{ass.id}}/"> Edit this assignment </a>
