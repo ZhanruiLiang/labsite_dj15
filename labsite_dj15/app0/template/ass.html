@@ -18,9 +18,7 @@ Assignment - {{ ass.title }}
     <h1> {{ass.title}} </h1>
     due date: {{ ass.duetime|date:"Y-m-d H:i"}}
 
-    <div id="desc">
-    {{ ass.description }}
-    </div>
+    <div id="desc">{{ ass.description }}</div>
 
     <h2> Upload Format </h2>
     <p> <pre>{{ ass.spec.html | safe }}</pre> </p>

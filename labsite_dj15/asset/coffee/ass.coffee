@@ -11,11 +11,12 @@ $ ->
         do (sid) ->
           button.click -> $.ajax
             url: '/m/delete_submission/' + sid + '/'
-            success: (data) ->
-              if data.success
-                $("#submissions tr[data-sid="+sid+"]").remove()
+            success: (success) ->
+              if success
+                updateList()
               else
                 updateError "Server error, failed to delete."
+
 
   updateError = (message) ->
     errorList = $('#error-list')

@@ -1,0 +1,26 @@
+.item-ass {
+  background-color: #f2f8ff;
+  border-radius: 5px;
+  list-style-type: square;
+  padding: 10px 16px;
+  margin-bottom: 10px;
+  font-size: 120%;
+}
+
+.item-ass h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.item-ass.submitted {
+  background-color: #c0eec5;
+}
+
+.note {
+  color: #4bb15b;
+  text-shadow: 2px 1px 8px rgba(50, 50, 50, .5);
+  font-weight: bold;
+  font-size: 370%;
+  float: right;
+  font-family: 'serif';
+}

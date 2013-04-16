@@ -5,17 +5,24 @@ Assignments
 {% endblock %}
 
 {% block body %}
+<link rel="stylesheet" href="{{ STATIC_URL }}/css/ass_list.css" />
 <ul>
-    {% for ass in asss %}
-    <li>
+    {% for ass, submitted in datas %}
+    <li class="item-ass {% if submitted %}submitted{% endif %}">
+    <h2>
     <a href="/m/ass/{{ass.id}}"> {{ass.title}} </a>  
-    <br />
+    {% if submitted %}
+        <span class="note"> submitted</span>
+    {% endif %}
+    </h2>
+    <p>
     Due date: {{ass.duetime}} <br/>
     Total submissions: {{ass.count}} <br/>
     {% if user.usertype == "TA" %}
         <!--<a href="/m/delete_ass/{{ass.id}}"> Delete {{ass.title}} </a> <br>-->
         <a href="/m/edit/{{ass.id}}/"> Edit this assignment </a>
     {% endif %}
+    </p>
     </li>
     {% endfor %}
 </ul>

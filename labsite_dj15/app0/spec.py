@@ -127,7 +127,7 @@ class Assignment(models.Model):
         return self.submission_set.count()
 
     def is_submitted(self, user):
-        return user.submission_set.filter(assignment=self).count() > 0
+        return user.submissions.filter(assignment=self).count() > 0
 
 def make_ass_dir(assignment):
     base = settings.ASSIGNMENT_BASE_DIR

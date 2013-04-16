@@ -134,7 +134,9 @@ def show_ass(request, assID=None):
             })
     else:
         asss = spec.Assignment.objects.all()
-        return make_response(request, 'ass_list.html', {'asss': asss})
+        return make_response(request, 'ass_list.html', {
+            'datas': [(ass, ass.is_submitted(request.user)) for ass in asss],
+            })
 
 @csrf_protect
 @usertype_only('TA')
