@@ -19,7 +19,12 @@
             <td>{{ sub.filename }}</td>
             <td>{{ sub.time }}</td>
             <td>
+                {% if sub.user == user %}
                 <button class="delete" data-sid="{{sub.id}}">delete</button>
+                {% endif %}
+                {% if user.usertype == "TA" %}
+                <button class="view" data-sid="{{sub.id}}">view</button>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

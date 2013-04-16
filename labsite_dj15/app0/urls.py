@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     url(r'^delete_ass/(?P<assID>\w+)/', views.delete_ass),
     # about submissions
     # url(r'^ass/(?P<assID>\w+)/list/$', view.ass_list),
-    url(r'^subm/(?P<submissionID>\w+)/$', views.submission), # for student
+    url(r'^subm/(?P<submissionID>\w+)/$', views.submission), # for student, TA
     # AJAX views
     url(r'^upload/$', views.upload), # for student, TA
     url(r'^submission_list/(?P<assID>\w+)/$', views.submission_list),

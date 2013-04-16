@@ -13,7 +13,10 @@ $ ->
             if success
               updateList()
             else
-              updateError "Server error, failed to delete."
+              updateError "Error, failed to delete."
+      $("#submissions button.view").click (event)->
+        sid = $(event.target).data "sid"
+        window.location = '/m/subm/' + sid + '/'
 
   updateError = (message) ->
     errorList = $('#error-list')
