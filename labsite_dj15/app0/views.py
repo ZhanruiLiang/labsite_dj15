@@ -200,7 +200,7 @@ def home(request):
 @wrap_json
 @usertype_only('student')
 def upload(request):
-    # upload/make a submission, require student user.
+    # upload/make a submission
     if request.method == 'POST':
         sleep(1)
         form = UploadForm(request.POST, request.FILES)
@@ -218,10 +218,13 @@ def upload(request):
                     'sid': str(submission.id),
                     })
             except UploadError as err:
-                return json.dumps({
+                html = err.html()
+                result = json.dumps({
                     'code': err.code,
-                    'message': err.html(),
+                    'message': html,
                     })
+                logger.debug('code:{}\nhtml:{}'.format(err.code, html))
+                return result
         return json.dumps({
             'code': 1,
             'message': form.errors,

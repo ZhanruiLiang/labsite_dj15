@@ -34,7 +34,7 @@ $ ->
       $('#upload-status').html "Uploading..."
       $('#error-list').hide()
       $('#upload-button').hide()
-    timeout: 60000
+    timeout: 120000
     error: (jqXHR, textStatus, errorThrown) ->
       $('#upload-status').html 'Uploaded failed: ' + textStatus + '/' + errorThrown
       $('#upload-button').show()
