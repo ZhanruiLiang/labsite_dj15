@@ -1,3 +1,4 @@
+# -*- encoding=utf-8 -*-
 from django.template import Template, Context 
 
 class UploadError(Exception):
@@ -7,7 +8,7 @@ class UploadError(Exception):
     def html(self):
         return self.ErrTemplate.render(Context({
             'head': self.Head,
-            'message': str(self),
+            'message': unicode(self),
             }))
 
 class FormatError(UploadError): 

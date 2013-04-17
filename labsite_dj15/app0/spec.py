@@ -156,7 +156,8 @@ AssignmentModifyForm = AssignmentCreationForm
 
 # utils 
 def get_tree(path):
-    p = subprocess.Popen(['tree', path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    base, sub = os.path.split(path)
+    p = subprocess.Popen(['tree', sub], cwd=base, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
     if p.poll() == 0:
         output = p.stdout.read()

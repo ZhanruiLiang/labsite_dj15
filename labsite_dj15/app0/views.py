@@ -1,3 +1,4 @@
+# -*- encoding=utf-8 -*-
 from django.template import Template, Context, RequestContext
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -208,22 +209,29 @@ def upload(request):
             file = request.FILES['file']
             assID = request.POST['assID']
             user = request.user
+            submission = None
             try:
                 submission = _upload(user, assID, file)
                 check_submission(submission)
+                submission.retcode = 0
+                submission.message = 'success'
                 submission.save()
                 return json.dumps({
                     'code': 0,
-                    'message': '',
+                    'message': submission.message,
                     'sid': str(submission.id),
                     })
             except UploadError as err:
                 html = err.html()
+                if submission:
+                    submission.code = err.code
+                    submission.message = html
+                    submission.save()
                 result = json.dumps({
                     'code': err.code,
                     'message': html,
                     })
-                logger.debug('code:{}\nhtml:{}'.format(err.code, html))
+                logger.debug('code:{}\nhtml:{}'.format(err.code, html.encode('utf8')))
                 return result
         return json.dumps({
             'code': 1,
@@ -253,18 +261,13 @@ def submission_list(request, assID):
         })
 
 @usertype_only('TA')
-def list_submission(request, assID):
-    # list all submission of that week, require GRADER permission
-    pass
-
-@usertype_only('TA')
-def submission(request, submissionID):
+def show_submission(request, submissionID):
     # show a submission, require GRADER permission
     pass
 
 @usertype_only('TA')
 def grade(request):
-    # accept only POST method
+    # accept only POST method, AJAX
     pass
 
 @wrap_json
@@ -278,8 +281,8 @@ def delete_submission(request, submissionID):
             submission = Submission.objects.get(id=submissionID, user=user)
         submission.delete()
         # logger.log('Delete submission #{}'.format(submission.id))
-    except Exception as e:
-        # logger.log('Failed to delete submission #{}\n{}'.format( submissionID, e))
+    except OSError as e:
+        logger.debug('Failed to delete submission #{}\n{}'.format(submissionID, str(e)))
         return json.dumps(False)
     return json.dumps(True)
 

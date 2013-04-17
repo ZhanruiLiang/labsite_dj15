@@ -1,18 +1,17 @@
 # Django settings for labsite_dj15 project.
 import os
 
-DEBUG = True
-#DEBUG = False
+_rootDir = '/home/ray/cppta/labsite_dj15/labsite_dj15/'
+
+def relpath(path):
+    return os.path.join(_rootDir, path)
+
+DEBUG = bool(int(open(relpath('debug')).read().strip()))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('Zhanrui.Liang', 'ray040123@gmail.com'),
 )
-
-_rootDir = '/home/ray/cppta/labsite_dj15/labsite_dj15/'
-
-def relpath(path):
-    return os.path.join(_rootDir, path)
 
 MANAGERS = ADMINS
 

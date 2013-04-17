@@ -10,8 +10,10 @@ class Submission(models.Model):
     user = models.ForeignKey(User, related_name='submissions')
     assignment = models.ForeignKey(Assignment)
     time = models.DateTimeField(auto_now=True)
-    # calculated
     path = models.FilePathField(blank=True, max_length=512)
+    # calculated
+    retcode = models.IntegerField(blank=True)
+    message = models.TextField(blank=True, default='')
     # afterward
     grader = models.ForeignKey(User, blank=True, null=True, 
             related_name='graded_submissions')
@@ -38,8 +40,6 @@ class UploadForm(forms.Form):
             help_text='maxsize: %d MB' % (MAX_SIZE/2**20),
             )
 
-# uploading = set()
-
 def upload(user, assID, file):
     # return: submission
     try:
@@ -48,7 +48,14 @@ def upload(user, assID, file):
         raise CheckError('Assignment with this id does not exist')
     if file.size > MAX_SIZE:
         raise UploadError('File too large.')
-    name = '{}-{}-{}'.format(assID, user.studentID, file.name)
+    submission = Submission(
+            user=user, 
+            assignment=ass,
+            retcode=UploadError.code,
+            message='unknown error',
+            )
+    submission.save(False)
+    name = '{}-{}-{}'.format(submission.id, user.studentID, file.name)
     path = os.path.join(ass.dest_dir, name)
     with open(path, 'wb') as outf:
         if file.multiple_chunks():
@@ -56,10 +63,6 @@ def upload(user, assID, file):
                 outf.write(chunk)
         else:
             outf.write(file.read())
-    submission = Submission(
-            user=user, 
-            assignment=ass,
-            )
     submission.path = path
     return submission
 

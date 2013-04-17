@@ -8,16 +8,22 @@
         {% endif %}
         <th>Filename</th>
         <th>Time</th> 
+        <th>state</th>
         <th>Action</th>
     </tr>
     {% for sub in submissions %}
-        <tr data-sid="{{sub.id}}">
+    <tr data-sid="{{sub.id}}" data-retcode="{{sub.retcode}}" data-message="{{sub.message}}">
             <td>{{ sub.id }}</td>
             {% if user.usertype == "TA" %}
             <td> {{sub.user.username}}/{{sub.user.studentID}} </td>
             {% endif %}
             <td>{{ sub.filename }}</td>
-            <td>{{ sub.time }}</td>
+            <td>{{ sub.time | date:"Y-m-d H:i:s"}}</td>
+            {% if sub.retcode == 0 %} 
+            <td class="success"> success </td>
+            {% else %}
+            <td class="fail"> fail </td>
+            {% endif %}
             <td>
                 {% if sub.user == user %}
                 <button class="delete" data-sid="{{sub.id}}">delete</button>

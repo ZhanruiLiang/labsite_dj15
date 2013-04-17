@@ -23,3 +23,19 @@ h2, h3 {
     padding: 3px 10px;
 }
 
+td.success, td.fail{
+    text-align: center;
+    font-weight: bold;
+}
+
+td.success {
+    color: #3b8926;
+}
+
+td.fail {
+    color: #ea3d3d;
+}
+
+td.fail:hover {
+    background-color: #ffacac;
+}

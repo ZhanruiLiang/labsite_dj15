@@ -1,22 +1,30 @@
 $ ->
-  updateList = -> $.ajax
-    url: '/m/submission_list/' + g_assID + '/'
-    method: 'GET'
-    success: (data) ->
-      $("#submissions").html data.list
-      $("#submissions button.delete").click (event)->
-        sid = $(event.target).data "sid"
-        $.ajax
-          method: 'GET'
-          url: '/m/delete_submission/' + sid + '/'
-          success: (success) ->
-            if success
-              updateList()
-            else
-              updateError "Error, failed to delete."
-      $("#submissions button.view").click (event)->
-        sid = $(event.target).data "sid"
-        window.location = '/m/subm/' + sid + '/'
+  updateList = -> 
+    $('#submissions').html 'loading list...'
+    $.ajax
+      url: '/m/submission_list/' + g_assID + '/'
+      method: 'GET'
+      success: (data) ->
+        $("#submissions").html data.list
+        $("#submissions button.delete").click (event)->
+          sid = $(event.target).data "sid"
+          $.ajax
+            method: 'GET'
+            url: '/m/delete_submission/' + sid + '/'
+            success: (success) ->
+              if success
+                updateError ''
+                updateList()
+              else
+                updateError "Error, failed to delete."
+        $("#submissions button.view").click (event)->
+          sid = $(event.target).data "sid"
+          window.location = '/m/subm/' + sid + '/'
+        $('#submissions td.fail').click (e) ->
+          tr = $(e.target).parent()
+          sid = tr.data 'sid'
+          message = tr.data 'message'
+          updateError message
 
   updateError = (message) ->
     errorList = $('#error-list')
@@ -46,6 +54,7 @@ $ ->
       else if data.code > 0
         updateError data.message
         $('#upload-status').html 'Upload failed.'
+        updateList()
       $('#upload-button').show()
 
   convert = new Markdown.getSanitizingConverter().makeHtml
