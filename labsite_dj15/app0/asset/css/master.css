@@ -45,17 +45,19 @@ th, td {
 #footer {
     color: #DDD;
     width: 100%;
-    position: fixed; left: 0; right: 0;
-    min-height: 100px;
+    left: 0; right: 0;
+    min-height: 300px;
+    padding: 12px 12px;
 }
 #footer .thanks{
+    width: 48%;
     text-shadow: 3px 2px 8px #555;
     padding: 12px 12px;
     font-size: 80%;
-    position: fixed;
-    left: 800px;
+    float: right;
 }
 #footer .info {
+    width: 48%;
     text-shadow: 3px 2px 8px #666;
     padding: 12px 12px;
     float: left;
