@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django import forms
-from debug import dprint
 
 class User(AbstractUser):
     usertype = models.CharField(max_length=10)
