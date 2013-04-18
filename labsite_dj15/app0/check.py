@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # class Compilation:
 class Compilation(models.Model):
-    subpath = models.FilePathField(max_length=100)
+    subpath = models.FilePathField(max_length=100, blank=True)
     submission = models.ForeignKey(Submission)
     cmd = models.TextField(blank=True, default='')
     exe = models.FilePathField(blank=True, max_length=512)
@@ -67,11 +67,11 @@ def check_file_type(path):
 DecompressHandlers = {
         'application/x-gzip': lambda s, d: ['tar', 'xf', s, '-C', d],
         'application/zip': lambda s, d: ['unzip', '-qqo', s, '-d', d],
-        'application/x-rar': lambda s, d: ['unrar', 'x', '-y', s, d],
+        # 'application/x-rar': lambda s, d: ['unrar', 'x', '-y', s, d],
         'application/x-bzip2': lambda s, d: ['tar', 'xf', s, '-C', d],
         'application/x-tar': lambda s, d: ['tar', 'xf', s, '-C', d],
         }
-SupportArchiveFormats = ('gzip', 'zip', 'rar', 'bzip2', 'tar')
+SupportArchiveFormats = ('gzip', 'zip', 'bzip2', 'tar')
 
 def decompress(submission):
     srcpath = submission.path

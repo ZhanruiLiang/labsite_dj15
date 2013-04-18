@@ -124,7 +124,7 @@ class Assignment(models.Model):
         return self._spec
 
     def count(self):
-        return self.submission_set.count()
+        return self.submission_set.filter(retcode=0).count()
 
     def is_submitted(self, user):
         return user.submissions.filter(assignment=self).count() > 0
