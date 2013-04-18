@@ -63,7 +63,7 @@ class Spec(object):
         """
         errors = []
         if not os.path.exists(os.path.join(path, self.name)):
-            if len(os.listdir(path)) != 1:
+            if len([f for f in os.listdir(path) if f!='__MACOSX']) != 1:
                 errors.append("""Please, put all the files into one directory before compressing your files.
 For example:
     $> ls
