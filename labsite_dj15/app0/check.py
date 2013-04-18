@@ -120,7 +120,12 @@ def compile_submission(submission, path):
                 files.append(fname.decode('utf8'))
         if not files: continue
         exe = 'exe'
-        cmd = ['g++', '-o', exe] + files
+        if '.c++11' in files:
+            cmd = ['g++', '-o', exe] + files
+        elif '.c++0x' in files:
+            cmd = ['g++', '-std=c++0x', '-o', exe] + files
+        else:
+            cmd = ['g++', '-std=c++11', '-o', exe] + files
         comp = Compilation(subpath=subpath,
                 submission=submission,
                 cmd=repr(cmd),
