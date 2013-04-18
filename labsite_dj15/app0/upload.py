@@ -3,6 +3,7 @@ from account import User
 from spec import Assignment
 from django import forms
 from errors import *
+from dictfield import JSONField
 import os
 
 class Submission(models.Model):
@@ -17,8 +18,6 @@ class Submission(models.Model):
     # afterward
     grader = models.ForeignKey(User, blank=True, null=True, 
             related_name='graded_submissions')
-    score = models.SmallIntegerField(null=True, blank=True)
-    comment = models.TextField(blank=True)
 
     @property
     def filename(self):
@@ -30,6 +29,22 @@ class Submission(models.Model):
         except OSError:
             pass
         super(Submission, self).delete()
+
+    def total_score(self):
+        return sum(s.score for s in self.score_set)
+
+    def get_score(self, problem_name):
+        try:
+            score = self.score_set.get(problem_name=problem_name)
+        except:
+            score = None
+        return score
+
+class Score(models.Model):
+    submission = models.ForeignKey(Submission, related_name='score_set')
+    problem_name = models.CharField(max_length=20)
+    score = models.IntegerField()
+    comment = models.TextField(default='')
 
 # Max size in bytes
 MAX_SIZE = 1024 * 1024 * 10

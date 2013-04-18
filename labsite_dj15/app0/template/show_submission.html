@@ -1,0 +1,59 @@
+{% extends "master.html" %}
+{% block title %}
+Submission #{{submission.id}} for assignment "{{ass.title}}"
+{% endblock %}
+
+{% block body %}
+<!--<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=cpp&skin=desert"></script>-->
+<link rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/prettify.css" />
+<link rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/desert.css" />
+<link rel="stylesheet" href="{{STATIC_URL}}css/subm.css" />
+
+<h1>Submission #{{submission.id}} </h1>
+For <a href="{{ass.url}}">assignment "{{ass.title}}"</a>
+
+<div id="rows">
+    {% for prob, score, contents in rows %}
+    <div class="row" data-name="{{prob.name}}">
+        <div class="title">
+            <h2>Problem {{prob.name}}</h2>
+        </div>
+        <div class="wrap">
+            {% for type, fname, content in contents %}
+            <div class="item">
+                <div class="meta">
+                    {{fname}} 
+                </div>
+                <div class="content">
+                <pre class="prettyprint lang-cpp">{{content}}</pre>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+        <div class="panel">
+            {% if user.usertype == "TA" %}
+            <span>
+                <button class="comment">Write Comment </button>
+            </span>
+            <span class="choice">
+                Points: 
+                {% for i in prob.points_range %}
+                <button class="choice">{{i}} points</button>
+                {% endfor %}
+            </span>
+            {% endif %}
+            {% if score != None %}
+            <span class="score"> Score: {{score.score}}</span>.
+            {% else %}
+            <span class="notgraded">Not graded yet.</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block foot_includes %}
+<script src="{{STATIC_URL}}google-code-prettify/prettify.js"></script>
+<script type="text/javascript">prettyPrint();</script>
+{% endblock %}

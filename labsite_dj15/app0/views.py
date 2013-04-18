@@ -7,6 +7,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.views import login as _login, logout as _logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from urlparse import urljoin
 from time import sleep
 import functools
@@ -14,14 +15,17 @@ import datetime
 import json
 import spec
 import logging
+import os
 
 import account
 from upload import UploadForm, Submission, upload as _upload
-from check import check_submission
+from check import check_submission, Decompression, Compilation
 from nav import render_nav_html
 from errors import *
 
 logger = logging.getLogger(__name__)
+
+pjoin = os.path.join
 
 def wrap_json(view):
     @functools.wraps(view)
@@ -244,15 +248,17 @@ def upload(request):
 
 @wrap_json
 @login_required
-def submission_list(request, assID):
+def submission_list(request, assID=None):
     # list a user's submissions for the assignment
     user = request.user
-    assignment = spec.Assignment.objects.get(id=assID)
-    if request.user.usertype == 'TA':
-        submissions = assignment.submission_set.extra(order_by=('-time',))
+    if assID is not None:
+        assignment = spec.Assignment.objects.get(id=assID)
+        submissions = assignment.submission_set
     else:
-        submissions = assignment.submission_set.filter(
-                user=request.user).extra(order_by=('-time',))
+        submissions = Submission.objects
+    if request.user.usertype == 'student':
+        submissions = submissions.filter(user=request.user)
+    submissions = submissions.extra(order_by=('-time',))
     return json.dumps({
         'list': get_template('submission_list.html').render(Context(dict(
             submissions=submissions,
@@ -260,10 +266,67 @@ def submission_list(request, assID):
             ))),
         })
 
-@usertype_only('TA')
+KnownTypes = ['.cpp', '.cc', '.h', '.cxx', '.hpp', '.c', '.txt', '.mkd']
+def detect_type(path):
+    base, ext = os.path.splitext(path)
+    if ext in KnownTypes:
+        return ext
+    base, name = os.path.split(path)
+    if name.lower() == 'makefile':
+        return '.txt'
+    return None
+
+@login_required
 def show_submission(request, submissionID):
     # show a submission, require GRADER permission
-    pass
+    # accept GET only
+    if request.method != 'GET': raise Http404()
+
+    user = request.user
+    try:
+        if user.usertype == 'TA':
+            submission = Submission.objects.get(id=submissionID, retcode=0)
+        elif user.usertype == 'student':
+            submission = Submission.objects.get(id=submissionID, retcode=0, user=suer)
+    except Submission.DoesNotExist:
+        raise Http404()
+
+    try:
+        dec = submission.decompression
+    except:
+        check_submission(submission)
+        submission.retcode = 0
+        submission.message = 'success'
+        submission.save()
+        dec = submission.decompression
+    # dec: decompression
+    comps = submission.compilation_set
+    spec_ = submission.assignment.spec
+    rows = []
+    # rows = [(prob, contents), (prob, contents), ...]
+    root = pjoin(dec.path, spec_.name)
+    for prob in spec_.problems:
+        # name, contents
+        #   contents = [(type, content), (type, content), ... ]
+        subroot = pjoin(root, prob.name)
+        contents = []
+        if prob.type == spec.Problem.CODE:
+            for fname in os.listdir(subroot):
+                fullpath = pjoin(subroot, fname)
+                type = detect_type(fullpath)
+                if type:
+                    contents.append((type, fname, open(fullpath).read()))
+            contents.sort(key=lambda (t, f, c): -len(c))
+        elif prob.type == spec.Problem.TEXT:
+            fullpath = subroot
+            contents.append(('.txt', subroot, open(fullpath).read()))
+        rows.append((prob, submission.get_score(prob.name), contents))
+    return make_response(request, 'show_submission.html', {
+        'rows': rows,
+        'submission': submission,
+        'ass': submission.assignment,
+        'back': request.GET.get('back', settings.HOME_URL),
+        })
 
 @usertype_only('TA')
 def grade(request):

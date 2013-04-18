@@ -1,5 +1,5 @@
 {% load static %}
-{# load dajaxice_templatetags #}
+{% load utils %}
 {% get_static_prefix as STATIC_URL %}
 <!DOCTYPE html>
 <html>
@@ -24,10 +24,6 @@
         <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-ui-1.10.2.custom.min.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/js/Markdown.Converter.js" ></script>
         <script type="text/javascript" src="{{ STATIC_URL }}/js/Markdown.Sanitizer.js" ></script>
-        {% comment %}
-            <script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/ajax.coffee"></script>
-            {% dajaxice_js_import %}
-        {% endcomment %}
         {% endblock %}
     </head>
     <body>

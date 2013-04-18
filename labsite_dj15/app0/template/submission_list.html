@@ -28,7 +28,7 @@
                 {% if sub.user == user %}
                 <button class="delete" data-sid="{{sub.id}}">delete</button>
                 {% endif %}
-                {% if user.usertype == "TA" %}
+                {% if user.usertype == "TA" and sub.retcode == 0 %}
                 <button class="view" data-sid="{{sub.id}}">view</button>
                 {% endif %}
             </td>

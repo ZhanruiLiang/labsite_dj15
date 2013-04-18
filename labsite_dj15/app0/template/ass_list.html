@@ -10,7 +10,7 @@ Assignments
     {% for ass, submitted in datas %}
     <li class="item-ass {% if submitted %}submitted{% endif %}">
     <h2>
-    <a href="/m/ass/{{ass.id}}"> {{ass.title}} </a>  
+    <a href="{{ass.url}}"> {{ass.title}} </a>  
     {% if submitted %}
         <span class="note"> submitted</span>
     {% endif %}

@@ -14,6 +14,9 @@ class Problem(object):
         self.name = name
         self.points = int(points)
 
+    def points_range(self):
+        return list(range(self.points+1))
+
 class Spec(object):
     """
     JSON: {
@@ -122,6 +125,9 @@ class Assignment(models.Model):
         if not hasattr(self, '_spec'):
             self._spec = Spec.from_json(self.spec_str)
         return self._spec
+
+    def url(self):
+        return '/m/ass/{}/'.format(self.id)
 
     def count(self):
         return self.submission_set.filter(retcode=0).count()
