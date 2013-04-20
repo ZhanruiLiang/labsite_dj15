@@ -16,12 +16,15 @@ import json
 import spec
 import logging
 import os
+import codecs
+import traceback
 
-import account
-from upload import UploadForm, Submission, upload as _upload
+from upload import UploadForm, Submission, Score, ScoreForm,  upload as _upload
 from check import check_submission, Decompression, Compilation
 from nav import render_nav_html
 from errors import *
+import account
+import grade as grade_
 
 logger = logging.getLogger(__name__)
 
@@ -276,6 +279,13 @@ def detect_type(path):
         return '.txt'
     return None
 
+def read_content(fullpath):
+    guess = ['utf-8', 'gbk']
+    for enc in guess:
+        try: return codecs.open(fullpath, encoding=enc).read()
+        except Exception as e: 
+            logger.debug(e)
+
 @login_required
 def show_submission(request, submissionID):
     # show a submission, require GRADER permission
@@ -287,7 +297,7 @@ def show_submission(request, submissionID):
         if user.usertype == 'TA':
             submission = Submission.objects.get(id=submissionID, retcode=0)
         elif user.usertype == 'student':
-            submission = Submission.objects.get(id=submissionID, retcode=0, user=suer)
+            submission = Submission.objects.get(id=submissionID, retcode=0, user=user)
     except Submission.DoesNotExist:
         raise Http404()
 
@@ -315,12 +325,18 @@ def show_submission(request, submissionID):
                 fullpath = pjoin(subroot, fname)
                 type = detect_type(fullpath)
                 if type:
-                    contents.append((type, fname, open(fullpath).read()))
+                    content = read_content(fullpath)
+                    contents.append((type, fname, content))
             contents.sort(key=lambda (t, f, c): -len(c))
         elif prob.type == spec.Problem.TEXT:
             fullpath = subroot
-            contents.append(('.txt', subroot, open(fullpath).read()))
-        rows.append((prob, submission.get_score(prob.name), contents))
+            content = read_content(fullpath)
+            contents.append(('.txt', prob.name, content))
+        try:
+            comID = submission.compilation_set.get(subpath=pjoin(spec_.name, prob.name)).id
+        except:
+            comID = None
+        rows.append((prob, submission.get_score(prob.name), comID, contents))
     return make_response(request, 'show_submission.html', {
         'rows': rows,
         'submission': submission,
@@ -328,10 +344,77 @@ def show_submission(request, submissionID):
         'back': request.GET.get('back', settings.HOME_URL),
         })
 
+@wrap_json
 @usertype_only('TA')
 def grade(request):
     # accept only POST method, AJAX
-    pass
+    if request.method != 'POST': raise Http404()
+    form = ScoreForm(request.POST, initial = {'comment': ''})
+    if form.is_valid():
+        sid = form.cleaned_data['sid']
+        try:
+            submission = Submission.objects.get(id=sid)
+            problem_name = form.cleaned_data['problem_name']
+            score = submission.get_score(problem_name)
+            if score is not None:
+                score.delete()
+
+            score = Score(submission=submission, 
+                    problem_name=problem_name,
+                    score=form.cleaned_data['score'],
+                    comment=form.cleaned_data['comment'],
+                    )
+            score.save()
+            return json.dumps({ 'code': 0, 
+                'message': 'success. Give {} points to problem "{}".'.format(
+                    score.score, score.problem_name)
+                })
+        except Exception as e:
+            return json.dumps({'code': 1, 'message': unicode(e)})
+    else:
+        return json.dumps({'code': 2,'message': unicode(form.errors)})
+
+@wrap_json
+@usertype_only('TA')
+def run_prog(request, comID):
+    if request.method != 'POST': raise Http404()
+    try:
+        compilation = Compilation.objects.get(id=comID)
+    except:
+        return json.dumps({'code': 1, 
+            'message': 'No such compilation. Make sure you\'ve compiled.'})
+    prog = grade_.run(compilation)
+    return json.dumps({'code': 0,
+        'runID': str(prog.id),
+        })
+
+@wrap_json
+@usertype_only('TA')
+def interact_prog(request, runID):
+    if request.method != 'POST': raise Http404()
+    try:
+        data = request.POST['input']
+        prog = grade_.Run.objects.get(id=runID)
+        out, err = prog.interact(data)
+        return json.dumps({
+            'code': 0,
+            'retcode': prog.proc.poll(),
+            'stdout': out,
+            'stderr': err,
+            })
+    except Exception as e:
+        logger.debug(traceback.format_exc())
+        return json.dumps({
+            'code': 1,
+            'message': unicode(e),
+            })
+
+@wrap_json
+@usertype_only('TA')
+def stop_prog(request, runID):
+    if request.method != 'POST': raise Http404()
+    prog = grade_.Run.objects.get(id=runID)
+    prog.stop()
 
 @wrap_json
 @login_required
@@ -350,9 +433,12 @@ def delete_submission(request, submissionID):
     return json.dumps(True)
 
 @usertype_only('TA')
+def assign(request, assID):
+    pass
+
+@usertype_only('TA')
 def delete_ass(request, assID):
-    if request.method == 'GET':
-        assignment = spec.Assignment.objects.get(id=assID)
-        assignment.delete()
-        return HttpResponseRedirect(settings.ASSIGNMENT_URL)
+    assignment = spec.Assignment.objects.get(id=assID)
+    assignment.delete()
+    return HttpResponseRedirect(settings.ASSIGNMENT_URL)
 

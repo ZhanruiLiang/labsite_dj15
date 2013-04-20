@@ -84,7 +84,7 @@ For example:
             for prob in self.problems:
                 # check if the file exist
                 if prob.name not in files:
-                    errors.append('File/directory \'{}\' not found.'.format(prob.name))
+                    errors.append('File/directory \'{}\' not found.'.format(os.path.join(self.name, prob.name)))
                 else:
                     if prob.type == Problem.TEXT:
                         if os.path.isdir(os.path.join(path, prob.name)):

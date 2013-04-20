@@ -5,16 +5,53 @@ Submission #{{submission.id}} for assignment "{{ass.title}}"
 
 {% block body %}
 <!--<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=cpp&skin=desert"></script>-->
-<link rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/prettify.css" />
-<link rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/desert.css" />
 <link rel="stylesheet" href="{{STATIC_URL}}css/subm.css" />
+<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/subm.coffee"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.scrollTo-1.4.3.1-min.js"></script>
 
-<h1>Submission #{{submission.id}} </h1>
-For <a href="{{ass.url}}">assignment "{{ass.title}}"</a>
+<h1>Submission #{{submission.id}}</h1>
+<h2>Infomation</h2>
+<table>
+    <tr>
+        <th>User/StudentID</th> 
+        <td>{{submission.user.username}}/{{submission.user.studentID}}</td>
+    </tr>
+    <tr>
+        <th>Assignment</th>
+        <td><a href="{{ass.url}}">{{ass.title}}</a></td>
+    </tr>
+    <tr>
+        <th>Time</th>
+        <td>{{submission.time|date:"Y-m-d H:i"}}</td>
+    </tr>
+    <tr>
+        <th>Score</th>
+        <td>{{submission.total_score}}</td>
+    </tr>
+    <tr>
+        <th>Grader</th>
+        <td>{{submission.grader.username}}</td>
+    </tr>
+</table>
+<br />
+
+<div id="themes" class="panel">
+    <link id="theme-default" disabled="disabled" rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/prettify.css" />
+    <link id="theme-desert" disabled="disabled" rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/desert.css" />
+    <link id="theme-sunburst" disabled="disabled" rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/sunburst.css" />
+    <link id="theme-doxy" disabled="disabled" rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/doxy.css" />
+    <link id="theme-sons-of-obsidian" disabled="disabled" rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/sons-of-obsidian.css" />
+    <link id="theme-tomorrow" disabled="disabled" rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/tomorrow.css" />
+    <link id="theme-github" disabled="disabled" rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/github.css" />
+    <h3> Choose a theme </h3>
+    <div class="choices">
+    </div>
+</div>
+
 
 <div id="rows">
-    {% for prob, score, contents in rows %}
-    <div class="row" data-name="{{prob.name}}">
+    {% for prob, score, comID, contents in rows %}
+    <div class="row" data-name="{{prob.name}}" data-points="{{prob.poins}}" data-comid="{{comID}}">
         <div class="title">
             <h2>Problem {{prob.name}}</h2>
         </div>
@@ -22,32 +59,69 @@ For <a href="{{ass.url}}">assignment "{{ass.title}}"</a>
             {% for type, fname, content in contents %}
             <div class="item">
                 <div class="meta">
-                    {{fname}} 
+                    <h3> {{fname}} </h3>
                 </div>
                 <div class="content">
-                <pre class="prettyprint lang-cpp">{{content}}</pre>
+                {% if type == '.cpp' or type == '.cxx' or type == '.h' or type == '.hpp' or type == '.cc' %}
+                <pre class="prettyprint lang-cpp linenums">{{content}}</pre>
+                {% elif type == '.txt' %}
+                <pre class="txt"><code>{{content}}</code></pre>
+                {% endif %}
                 </div>
             </div>
             {%endfor%}
         </div>
-        <div class="panel">
-            {% if user.usertype == "TA" %}
-            <span>
-                <button class="comment">Write Comment </button>
-            </span>
-            <span class="choice">
-                Points: 
-                {% for i in prob.points_range %}
-                <button class="choice">{{i}} points</button>
-                {% endfor %}
-            </span>
-            {% endif %}
-            {% if score != None %}
-            <span class="score"> Score: {{score.score}}</span>.
+        {% if user.usertype == "TA" %}
+        <div class="grade panel">
+            <form class="grade" action="/m/grade/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="sid" value="{{submission.id}}"/>
+                <input type="hidden" name="problem_name" value="{{prob.name}}"/>
+                
+                <span class="choice">
+                    Points: 
+                    {% for i in prob.points_range %}
+                        <input type="radio" name="score" id="score-{{i}}" value="{{i}}"
+                        {% if not score and i == prob.points or score and i == score.score %}
+                            checked="checked"
+                        {%endif%}/>
+                        <label for="score-{{i}}">{{i}} points </label>
+                    {% endfor %}
+                </span>
+                <button type="submit" class="grade action">Grade this</button>
+                <br/>
+                <textarea id="comment-{{submission.id}}-{{prob.name}}" 
+                    name="comment"
+                    class="comment" placeholder="write comment here"
+                    >{% if score != None %}{{score.comment}}{%endif%}</textarea>
+            </form>
+            <div class="console">
+                <div class="panel">
+                    {% if comID  %}
+                    <button class="run action">Run</button>
+                    {% else %}
+                    <button class="run action" disabled>Not compiled</button>
+                    {% endif %}
+                </div>
+                <div class="console-inner">
+                </div>
+            </div>
+        </div>
+        {% elif user.usertype == "student" %}
+        <div class="grade panel">
+            <h4>Points</h4>
+            {% if score %}
+            <span class="score"> {{score.score}} </span>
             {% else %}
-            <span class="notgraded">Not graded yet.</span>
+            <span class="notgraded"> Not graded yet</span>
+            {% endif %}
+            {% if score.comment or 1 %}
+                <br />
+                <h4>Comment</h4>
+                <div class="comment">{{score.comment|safe}}</div>
             {% endif %}
         </div>
+        {% endif %}
     </div>
     {% endfor %}
 </div>

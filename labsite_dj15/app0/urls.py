@@ -23,4 +23,8 @@ urlpatterns = patterns('',
     url(r'^submission_list/(?P<assID>\w+)/$', views.submission_list),
     url(r'^delete_submission/(?P<submissionID>\w+)/$', views.delete_submission),
     url(r'^grade/$', views.grade), # for TA; AJAX POST
+    url(r'^run/(?P<comID>\w+)/$', views.run_prog),
+    url(r'^stop/(?P<runID>\w+)/$', views.stop_prog),
+    url(r'^interact/(?P<runID>\w+)/$', views.interact_prog),
+    url(r'^assign/(?<assID>\w+)/$', views.assign),
 )

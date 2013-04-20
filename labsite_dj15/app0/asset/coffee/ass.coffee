@@ -3,13 +3,13 @@ $ ->
     $('#submissions').html 'loading list...'
     $.ajax
       url: '/m/submission_list/' + g_assID + '/'
-      method: 'GET'
+      type: 'get'
       success: (data) ->
         $("#submissions").html data.list
         $("#submissions button.delete").click (event)->
           sid = $(event.target).data "sid"
           $.ajax
-            method: 'GET'
+            type: 'post'
             url: '/m/delete_submission/' + sid + '/'
             success: (success) ->
               if success
@@ -34,6 +34,7 @@ $ ->
     errorList.html message
     if message
       errorList.show()
+      $.scrollTo(errorList)
     else
       errorList.hide()
 

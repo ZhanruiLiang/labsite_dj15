@@ -24,26 +24,26 @@ Assignment - {{ ass.title }}
     <p> <pre>{{ ass.spec.html | safe }}</pre> </p>
     <p> You can download the <a href="{{ass.example.url}}">example</a> for reference.</p> .
 
-    <h2> Upload </h2>
-    <div id="error-list" class="error-list" ></div>
     {% if user.usertype == "TA" %}
-        <a href="/m/list/{{ass.id}}/"> Grade this assignment </a>
-        <br />
+        <h2>Admin</h2>
         <a href="/m/edit/{{ass.id}}/"> Edit this assignment </a>
-    {% elif user.usertype == "student" %}
+        <br/>
+        <a href="/m/assign/{{ass.id}}/"> Assign this assignment </a>
+        <br/>
     {% endif %}
 
-        <div id="submissions">
-        </div>
-
-        <form id="upload-form" action="/m/upload/" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="hidden" name="assID" value="{{ass.id}}" />
-            <input type="hidden" name="next" value="/m/ass/{{ass.id}}/"/>
-            
-            <button id="upload-button" type="submit"> Upload </button>
-            <span id="upload-status"></span>
-        </form>
+    <h2> Upload </h2>
+    <div id="error-list" class="error-list" ></div>
+    <form id="upload-form" action="/m/upload/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button id="upload-button" type="submit"> Upload </button>
+        {{ form }}
+        <input type="hidden" name="assID" value="{{ass.id}}" />
+        <input type="hidden" name="next" value="/m/ass/{{ass.id}}/"/>
+        <span id="upload-status"></span>
+    </form>
+    <br/>
+    <div id="submissions">
+    </div>
 </div>
 {% endblock %}

@@ -1,5 +1,4 @@
 {% if submissions %}
-    Submissions:
     <table>
     <tr>
         <th>ID</th>
@@ -26,10 +25,10 @@
             {% endif %}
             <td>
                 {% if sub.user == user %}
-                <button class="delete" data-sid="{{sub.id}}">delete</button>
+                    <button class="delete" data-sid="{{sub.id}}">delete</button>
                 {% endif %}
-                {% if user.usertype == "TA" and sub.retcode == 0 %}
-                <button class="view" data-sid="{{sub.id}}">view</button>
+                {% if sub.retcode == 0 or sub.compilation_set %}
+                    <button class="view" data-sid="{{sub.id}}">view</button>
                 {% endif %}
             </td>
         </tr>

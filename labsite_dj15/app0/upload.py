@@ -44,7 +44,13 @@ class Score(models.Model):
     submission = models.ForeignKey(Submission, related_name='score_set')
     problem_name = models.CharField(max_length=20)
     score = models.IntegerField()
-    comment = models.TextField(default='')
+    comment = models.TextField(default='', blank=True)
+
+class ScoreForm(forms.ModelForm):
+    class Meta:
+        model = Score
+        exclude = ('submission',)
+    sid = forms.CharField()
 
 # Max size in bytes
 MAX_SIZE = 1024 * 1024 * 10
@@ -70,7 +76,7 @@ def upload(user, assID, file):
             message='unknown error',
             )
     submission.save(False)
-    name = '{}-{}-{}'.format(submission.id, user.studentID, file.name)
+    name = u'{}-{}-{}'.format(submission.id, user.studentID, file.name)
     path = os.path.join(ass.dest_dir, name)
     with open(path, 'wb') as outf:
         if file.multiple_chunks():
