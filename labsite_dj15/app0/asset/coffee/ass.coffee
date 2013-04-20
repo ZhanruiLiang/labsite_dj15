@@ -1,5 +1,5 @@
 $ ->
-  updateList = -> 
+  updateList = ->
     $('#submissions').html 'loading list...'
     $.ajax
       url: '/m/submission_list/' + g_assID + '/'
