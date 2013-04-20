@@ -139,6 +139,7 @@ def compile_submission(submission, path):
             if p.poll() != 0:
                 result = comp.result = ' '.join(cmd) + '\n' + p.stderr.read().decode('utf8')
                 raise CompileError(result)
+            comp.result = 'success'
         except OSError as err:
             comp.result = err.message
             raise CompileError(err.message)
