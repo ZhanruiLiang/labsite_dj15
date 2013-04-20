@@ -52,19 +52,21 @@ class Run(models.Model):
 
         if proc.poll() is not None:
             # ended
-            self.state = proc.poll()
+            self.stop()
         return (dataOut, dataErr)
 
     def stop(self):
         if self.proc.poll() is None:
             # proc not ended
             self.proc.kill()
-        try: del Run.procs[int(self.procID)]
-        except KeyError: pass
+            self.state = proc.poll()
+            self.save()
 
     def delete(self):
         # logger.debug('runID {} delete'.format(self.id))
         self.stop()
+        try: del Run.procs[int(self.procID)]
+        except KeyError: pass
         super(Run, self).delete()
 
 def run(compilation, args=None):
@@ -87,10 +89,10 @@ def clear():
     while 1:
         sleep(INTERVAL)
         now = datetime.today()
-        for run in Run.objects:
+        for run in Run.objects.all():
             if (now - run.start_time).seconds > TIME_OUT:
                 run.stop()
 
 def start_clear():
     Thread(target=clear).start()
-start_clear()
+# start_clear()
