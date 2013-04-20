@@ -295,16 +295,20 @@ def show_submission(request, submissionID):
     user = request.user
     try:
         if user.usertype == 'TA':
-            submission = Submission.objects.get(id=submissionID, retcode=0)
+            submission = Submission.objects.get(id=submissionID)
         elif user.usertype == 'student':
-            submission = Submission.objects.get(id=submissionID, retcode=0, user=user)
+            submission = Submission.objects.get(id=submissionID, user=user)
     except Submission.DoesNotExist:
         raise Http404()
 
     try:
         dec = submission.decompression
     except:
-        check_submission(submission)
+        # not decompressed 
+        try:
+            check_submission(submission)
+        except UploadError as err:
+            raise Http404()
         submission.retcode = 0
         submission.message = 'success'
         submission.save()
@@ -333,7 +337,7 @@ def show_submission(request, submissionID):
             content = read_content(fullpath)
             contents.append(('.txt', prob.name, content))
         try:
-            comID = submission.compilation_set.get(subpath=pjoin(spec_.name, prob.name)).id
+            comID = comps.get(subpath=pjoin(spec_.name, prob.name)).id
         except:
             comID = None
         rows.append((prob, submission.get_score(prob.name), comID, contents))

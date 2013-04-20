@@ -26,5 +26,5 @@ urlpatterns = patterns('',
     url(r'^run/(?P<comID>\w+)/$', views.run_prog),
     url(r'^stop/(?P<runID>\w+)/$', views.stop_prog),
     url(r'^interact/(?P<runID>\w+)/$', views.interact_prog),
-    url(r'^assign/(?<assID>\w+)/$', views.assign),
+    url(r'^assign/(?P<assID>\w+)/$', views.assign),
 )

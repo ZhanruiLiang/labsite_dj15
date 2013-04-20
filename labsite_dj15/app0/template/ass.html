@@ -36,7 +36,7 @@ Assignment - {{ ass.title }}
     <div id="error-list" class="error-list" ></div>
     <form id="upload-form" action="/m/upload/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <button id="upload-button" type="submit"> Upload </button>
+        <button id="upload-button" class="action" type="submit"> Upload </button>
         {{ form }}
         <input type="hidden" name="assID" value="{{ass.id}}" />
         <input type="hidden" name="next" value="/m/ass/{{ass.id}}/"/>

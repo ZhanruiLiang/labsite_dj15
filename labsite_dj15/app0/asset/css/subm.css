@@ -31,46 +31,6 @@ div.meta {
     padding: 5px 10px;
 }
 
-button {
-    border-radius: 0.5em 0.5em 0.5em 0.5em;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    display: inline-block;
-    margin: 0 2px;
-    padding: 2px 6px;
-    outline: medium none;
-    text-align: center;
-    text-decoration: none;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-    vertical-align: baseline;
-    font-weight: bold;
-}
-button.choice{
-    background: -moz-linear-gradient(center top , #7DB72F, #4E7D0E) repeat scroll 0 0 transparent;
-    background-color: #7DB72F;
-    border: 1px solid #538312;
-    color: #E8F0DE;
-}
-button.selected{
-    background: -moz-linear-gradient(center top , #d50e2f, #8b081e) repeat scroll 0 0 transparent;
-    background-color: #d50e2f;
-}
-button.warn.action{
-    background: -moz-linear-gradient(center top , #d50e2f, #8b081e) repeat scroll 0 0 transparent;
-    background-color: #d50e2f;
-}
-button.action{
-    background: -moz-linear-gradient(center top , #00ADEE, #0078A5) repeat scroll 0 0 transparent;
-    background-color: #00ADEE;
-    border: 1px solid #0076A3;
-    color: #D9EEF7;
-}
-button.action:disabled{
-    background: -moz-linear-gradient(center top , #b3b3b3, #7b7b7b) repeat scroll 0 0 transparent;
-    background-color: #7b7b7b;
-    border: 1px solid #3d3d3d;
-    color: #3d3d3d;
-}
 
 .panel {
     right: 0px;

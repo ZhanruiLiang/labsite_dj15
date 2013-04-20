@@ -115,15 +115,16 @@ def compile_submission(submission, path):
     for subpath in spec.code_dirs():
         fullpath = os.path.join(path, subpath)
         files = []
+        cpp11 = False
         for fname in os.listdir(fullpath):
             if is_cpp(fname):
                 files.append(fname.decode('utf8'))
+            if fname == '.c++11':
+                cpp11 = True
         if not files: continue
         exe = 'exe'
-        if '.c++11' in files:
+        if cpp11:
             cmd = ['g++', '-std=c++11', '-o', exe] + files
-        elif '.c++0x' in files:
-            cmd = ['g++', '-std=c++0x', '-o', exe] + files
         else:
             cmd = ['g++', '-o', exe] + files
         comp = Compilation(subpath=subpath,
