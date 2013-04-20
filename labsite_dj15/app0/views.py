@@ -337,7 +337,7 @@ def show_submission(request, submissionID):
             content = read_content(fullpath)
             contents.append(('.txt', prob.name, content))
         try:
-            comID = comps.get(subpath=pjoin(spec_.name, prob.name)).id
+            comID = comps.get(subpath=pjoin(spec_.name, prob.name), result='success').id
         except:
             comID = None
         rows.append((prob, submission.get_score(prob.name), comID, contents))
