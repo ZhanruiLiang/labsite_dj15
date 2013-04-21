@@ -137,3 +137,14 @@ button.action:disabled{
     border: 1px solid #3d3d3d;
     color: #3d3d3d;
 }
+.panel {
+    right: 0px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px;
+    padding: 5px 10px;
+    overflow: auto;
+}
+
+.grader-name {
+    font-weight: bold;
+}

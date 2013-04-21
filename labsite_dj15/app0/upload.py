@@ -10,7 +10,7 @@ class Submission(models.Model):
     # required
     user = models.ForeignKey(User, related_name='submissions')
     assignment = models.ForeignKey(Assignment)
-    time = models.DateTimeField(auto_now=True)
+    time = models.DateTimeField(auto_now_add=True)
     path = models.FilePathField(blank=True, max_length=512)
     # calculated
     retcode = models.IntegerField(blank=True)
@@ -18,6 +18,7 @@ class Submission(models.Model):
     # afterward
     grader = models.ForeignKey(User, blank=True, null=True, 
             related_name='graded_submissions')
+    finished = models.BooleanField(default=False)
 
     @property
     def filename(self):
@@ -31,7 +32,7 @@ class Submission(models.Model):
         super(Submission, self).delete()
 
     def total_score(self):
-        return sum(s.score for s in self.score_set)
+        return sum(s.score for s in self.score_set.all())
 
     def get_score(self, problem_name):
         try:
@@ -39,6 +40,9 @@ class Submission(models.Model):
         except:
             score = None
         return score
+
+    def url(self):
+        return '/m/subm/{}/'.format(self.id)
 
 class Score(models.Model):
     submission = models.ForeignKey(Submission, related_name='score_set')

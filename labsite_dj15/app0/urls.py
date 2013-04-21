@@ -17,7 +17,8 @@ urlpatterns = patterns('',
     url(r'^delete_ass/(?P<assID>\w+)/', views.delete_ass),
     # about submissions
     # url(r'^ass/(?P<assID>\w+)/list/$', view.ass_list),
-    url(r'^subm/(?P<submissionID>\w+)/$', views.show_submission), # for student, TA
+    url(r'^subm/((?P<submissionID>\w+)/)$', views.show_submission), # for student, TA
+    # url(r'^assign/(?P<assID>\w+)/$', views.show_assign),
     # AJAX views
     url(r'^upload/$', views.upload), # for student, TA
     url(r'^submission_list/(?P<assID>\w+)/$', views.submission_list),
@@ -26,5 +27,6 @@ urlpatterns = patterns('',
     url(r'^run/(?P<comID>\w+)/$', views.run_prog),
     url(r'^stop/(?P<runID>\w+)/$', views.stop_prog),
     url(r'^interact/(?P<runID>\w+)/$', views.interact_prog),
-    url(r'^assign/(?P<assID>\w+)/$', views.assign),
+    url(r'^doassign/(?P<assID>\w+)/$', views.do_assign),
+    url(r'^finish/(?P<submissionID>\w+)/', views.finish),
 )

@@ -7,7 +7,9 @@
         {% endif %}
         <th>Filename</th>
         <th>Time</th> 
-        <th>state</th>
+        <th>State</th>
+        <th>Grader</th>
+        <th>Score</th>
         <th>Action</th>
     </tr>
     {% for sub in submissions %}
@@ -19,15 +21,31 @@
             <td>{{ sub.filename }}</td>
             <td>{{ sub.time | date:"Y-m-d H:i:s"}}</td>
             {% if sub.retcode == 0 %} 
-            <td class="success"> success </td>
+                <td class="success"> success </td>
             {% else %}
-            <td class="fail"> fail </td>
+                <td class="fail"> fail </td>
             {% endif %}
+            <td>
+                {% if sub.grader %}
+                <span class="grader-name">{{ sub.grader.username }}</span>
+                {% else %}
+                    <span class="fail">
+                        Not assigned
+                    </span>
+                {% endif %}
+            </td>
+            <td>
+                {% if not sub.finished %}
+                <span class="fail"> Not graded </span>
+                {% else %}
+                <span class="success"> {{ sub.total_score }} </span>
+                {% endif %}
+            </td>
             <td>
                 {% if sub.user == user %}
                     <button class="delete action warn" data-sid="{{sub.id}}">delete</button>
                 {% endif %}
-                {% if sub.retcode == 0 or sub.compilation_set %}
+                {% if sub.retcode == 0 or sub.compilation_set.count %}
                     <button class="action view" data-sid="{{sub.id}}">view</button>
                 {% endif %}
             </td>

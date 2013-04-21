@@ -22,6 +22,7 @@ import traceback
 from upload import UploadForm, Submission, Score, ScoreForm,  upload as _upload
 from check import check_submission, Decompression, Compilation
 from nav import render_nav_html
+from spec import Assignment
 from errors import *
 import account
 import grade as grade_
@@ -130,9 +131,11 @@ def login(request):
 def show_ass(request, assID=None):
     if assID:
         assignment = spec.Assignment.objects.get(id=assID)
+        TAs = account.User.objects.filter(usertype='TA')
         return make_response(request, 'ass.html', {
             'ass': assignment, 
             'form': UploadForm(),
+            'TAs': TAs,
             })
     else:
         asss = spec.Assignment.objects.all()
@@ -295,9 +298,17 @@ def show_submission(request, submissionID):
     user = request.user
     try:
         if user.usertype == 'TA':
+            submissions = Submission.objects.filter(
+                    grader=user, finished=0, retcode=0)
             submission = Submission.objects.get(id=submissionID)
+            for nextSubm in submissions:
+                if nextSubm != submission:
+                    break
+            else:
+                nextSubm = None
         elif user.usertype == 'student':
             submission = Submission.objects.get(id=submissionID, user=user)
+            nextSubm = None
     except Submission.DoesNotExist:
         raise Http404()
 
@@ -341,11 +352,13 @@ def show_submission(request, submissionID):
         except:
             comID = None
         rows.append((prob, submission.get_score(prob.name), comID, contents))
+
     return make_response(request, 'show_submission.html', {
         'rows': rows,
         'submission': submission,
         'ass': submission.assignment,
         'back': request.GET.get('back', settings.HOME_URL),
+        'next': submission.assignment.url() if nextSubm is None else nextSubm.url(),
         })
 
 @wrap_json
@@ -436,9 +449,43 @@ def delete_submission(request, submissionID):
         return json.dumps(False)
     return json.dumps(True)
 
+# @usertype_only('TA')
+# def show_assign(request, assID):
+#     assignment = Assignment.objects.get(id=assID)
+#     TAs = account.User.objects.filter(usertype='TA')
+#     submissions = Submission.objects.filter(retcode=0, assignment=assignment)
+    # TODO
+
+@wrap_json
 @usertype_only('TA')
-def assign(request, assID):
-    pass
+def finish(request, submissionID):
+    submission = Submission.objects.get(id=submissionID, grader=request.user)
+    submission.finished = True
+    submission.save()
+    return json.dumps({'code': 0})
+
+@wrap_json
+@usertype_only('TA')
+def do_assign(request, assID):
+    if request.method != 'POST': raise Http404()
+    TAs = []
+    for name in json.loads(request.POST['TAs']):
+        TAs.append(account.User.objects.get(username=name))
+
+    assignment = Assignment.objects.get(id=assID)
+    submissions = Submission.objects.filter(retcode=0, assignment=assignment)
+    m = len(TAs)
+    for i, subm in enumerate(submissions):
+        if subm.total_score() is None: continue
+        assignTA = TAs[i % m]
+        subm.grader = assignTA
+        subm.save()
+    msg = 'Success. Assigned {num} submissions to {numTA} TAs.'.format(
+            num=len(submissions), numTA=m)
+    return json.dumps({
+        'code': 0,
+        'message': msg,
+        })
 
 @usertype_only('TA')
 def delete_ass(request, assID):

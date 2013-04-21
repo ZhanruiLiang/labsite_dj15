@@ -1,4 +1,30 @@
 $ ->
+  $('#assign-button').click ->
+    $('#assign-button').attr 'disabled', 'disabled'
+    TAs = []
+    for elem in $('#TAs .TA')
+      elem = $ elem
+      if (elem.find 'input[type="checkbox"]').is(':checked')
+        TAs.push elem.data 'username'
+
+    console.log TAs
+    $.ajax
+      type: 'post'
+      url: '/m/doassign/' + g_assID + '/'
+      data:
+        TAs: JSON.stringify(TAs)
+      error: ->
+        updateError 'Failed to assign'
+        $('#assign-button').removeAttr 'disabled'
+      success: (data)->
+        updateList()
+        if data.code == 0
+          updateError ''
+          console.log data.message
+        else
+          updateError data.message
+      $('#assign-button').removeAttr 'disabled'
+
   updateList = ->
     $('#submissions').html 'loading list...'
     $.ajax
@@ -25,6 +51,7 @@ $ ->
           sid = tr.data 'sid'
           message = tr.data 'message'
           updateError message
+        updateGrader()
 
   updateError = (message) ->
     errorList = $('#error-list')

@@ -4,12 +4,21 @@ lookup = (a, key)->
       return v
   null
 
+nameToColor = (name) ->
+  [r, g, b] = [0, 1, 2].map (i)->
+    if name.length > i
+      100 + (name.charCodeAt i) % 100
+    else 0
+  'rgb('+r+','+g+','+b+')'
+
 itervalues = (a)-> v for [k, v] in a
 
 pre = (data) -> if data then $ '<pre>' + data + '</pre>' else ''
 
 max = (a, b) -> if a > b then a else b
 min = (a, b) -> if a < b then a else b
+
+relhref = (name)-> $('head link[rel="'+name+'"]').attr 'href'
 
 class ThemeSet
   @COOKIE_NAME: 'fav-theme'
@@ -49,10 +58,14 @@ class Problem
     @runButton = div.find 'button.run'
     @running = false
     @comID = div.data 'comid'
+    @scoreMeter = div.find '.score-meter'
 
     @form.ajaxForm
       timeout: 20000
-      success: (data) => @update_console data.message, data.code
+      success: (data) =>
+        @update_console data.message, data.code
+        @scoreMeter.removeClass('notgraded score').addClass('score').html(
+          'Graded ' + @form.find('input[type="radio"]:checked').val())
 
     @update_console 'This is the console for problem ' + @name
 
@@ -141,5 +154,15 @@ $ ->(
   themes = new ThemeSet()
   problems = for div in $('#rows .row')
     new Problem($ div)
-  null
+  $('#fin-next').click ->
+    $.ajax
+      type: 'post'
+      url: '/m/finish/' + $('#fin-next').data('cur-sid') + '/'
+      success: (data) ->
+        if data.code == 0
+          window.location = relhref 'next'
+  $('#next').click ->
+    window.location = relhref 'next'
+  $('#back').click ->
+    window.location = relhref 'back'
 )

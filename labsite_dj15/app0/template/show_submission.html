@@ -1,4 +1,9 @@
 {% extends "master.html" %}
+
+{% block head_includes %}
+    {{ block.super }}
+    <link rel="back" href="{{ass.url}}" />
+{% endblock %}
 {% block title %}
 Submission #{{submission.id}} for assignment "{{ass.title}}"
 {% endblock %}
@@ -7,32 +12,6 @@ Submission #{{submission.id}} for assignment "{{ass.title}}"
 <!--<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=cpp&skin=desert"></script>-->
 <link rel="stylesheet" href="{{STATIC_URL}}css/subm.css" />
 <script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/subm.coffee"></script>
-
-<h1>Submission #{{submission.id}}</h1>
-<h2>Infomation</h2>
-<table>
-    <tr>
-        <th>User/StudentID</th> 
-        <td>{{submission.user.username}}/{{submission.user.studentID}}</td>
-    </tr>
-    <tr>
-        <th>Assignment</th>
-        <td><a href="{{ass.url}}">{{ass.title}}</a></td>
-    </tr>
-    <tr>
-        <th>Time</th>
-        <td>{{submission.time|date:"Y-m-d H:i"}}</td>
-    </tr>
-    <tr>
-        <th>Score</th>
-        <td>{{submission.total_score}}</td>
-    </tr>
-    <tr>
-        <th>Grader</th>
-        <td>{{submission.grader.username}}</td>
-    </tr>
-</table>
-<br />
 
 <div id="themes" class="panel">
     <link id="theme-default" disabled="disabled" rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/prettify.css" />
@@ -47,83 +26,10 @@ Submission #{{submission.id}} for assignment "{{ass.title}}"
     </div>
 </div>
 
-
-<div id="rows">
-    {% for prob, score, comID, contents in rows %}
-    <div class="row" data-name="{{prob.name}}" data-points="{{prob.poins}}" data-comid="{{comID}}">
-        <div class="title">
-            <h2>Problem {{prob.name}}</h2>
-        </div>
-        <div class="wrap">
-            {% for type, fname, content in contents %}
-            <div class="item">
-                <div class="meta">
-                    <h3> {{fname}} </h3>
-                </div>
-                <div class="content">
-                {% if type == '.cpp' or type == '.cxx' or type == '.h' or type == '.hpp' or type == '.cc' %}
-                <pre class="prettyprint lang-cpp linenums">{{content}}</pre>
-                {% elif type == '.txt' %}
-                <pre class="txt"><code>{{content}}</code></pre>
-                {% endif %}
-                </div>
-            </div>
-            {%endfor%}
-        </div>
-        {% if user.usertype == "TA" %}
-        <div class="grade panel">
-            <form class="grade" action="/m/grade/" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="sid" value="{{submission.id}}"/>
-                <input type="hidden" name="problem_name" value="{{prob.name}}"/>
-                
-                <span class="choice">
-                    Points: 
-                    {% for i in prob.points_range %}
-                        <input type="radio" name="score" id="score-{{i}}" value="{{i}}"
-                        {% if not score and i == prob.points or score and i == score.score %}
-                            checked="checked"
-                        {%endif%}/>
-                        <label for="score-{{i}}">{{i}} points </label>
-                    {% endfor %}
-                </span>
-                <button type="submit" class="grade action">Grade this</button>
-                <br/>
-                <textarea id="comment-{{submission.id}}-{{prob.name}}" 
-                    name="comment"
-                    class="comment" placeholder="write comment here"
-                    >{% if score != None %}{{score.comment}}{%endif%}</textarea>
-            </form>
-            <div class="console">
-                <div class="panel">
-                    {% if comID  %}
-                    <button class="run action">Run</button>
-                    {% else %}
-                    <button class="run action" disabled>Compile Error</button>
-                    {% endif %}
-                </div>
-                <div class="console-inner">
-                </div>
-            </div>
-        </div>
-        {% elif user.usertype == "student" %}
-        <div class="grade panel">
-            <h4>Points</h4>
-            {% if score %}
-            <span class="score"> {{score.score}} </span>
-            {% else %}
-            <span class="notgraded"> Not graded yet</span>
-            {% endif %}
-            {% if score.comment or 1 %}
-                <br />
-                <h4>Comment</h4>
-                <div class="comment">{{score.comment|safe}}</div>
-            {% endif %}
-        </div>
-        {% endif %}
-    </div>
-    {% endfor %}
+<div id="submission-content">
+    {% include "subm.html" %}
 </div>
+
 {% endblock %}
 
 {% block foot_includes %}

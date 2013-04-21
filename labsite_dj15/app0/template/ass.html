@@ -6,8 +6,9 @@ Assignment - {{ ass.title }}
 
 {% block head_includes %}
 {{ block.super }}
-<link rel="stylesheet" href="{{ STATIC_URL }}/css/ass.css" />
-<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/ass.coffee"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/ass.css" />
+<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/grader-color.coffee"></script>
+<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/ass.coffee"></script>
 {% endblock %}
 
 {% block body %}
@@ -26,15 +27,28 @@ Assignment - {{ ass.title }}
 
     {% if user.usertype == "TA" %}
         <h2>Admin</h2>
-        <a href="/m/edit/{{ass.id}}/"> Edit this assignment </a>
-        <br/>
-        <a href="/m/assign/{{ass.id}}/"> Assign this assignment </a>
-        <br/>
+        <p>
+            <div id="TAs" class="panel">
+                {% for ta in TAs %}
+                <span class="TA" data-username="{{ta.username}}"> 
+                    <label for="check-{{ta.username}}" class="grader-name">{{ta.username}}</label>
+                    <input id="check-{{ta.username}}" type="checkbox" />
+                </span>
+                {% endfor %}
+                <br/>
+                <br/>
+                <button id="assign-button" class="action"> Assign this Assignment </button>
+            </div>
+        </p>
+        <p>
+            <a href="/m/edit/{{ass.id}}/"> Edit this assignment </a>
+        <!--<a href="/m/assign/{{ass.id}}/"> Assign this assignment </a>-->
+        </p>
     {% endif %}
 
     <h2> Upload </h2>
     <div id="error-list" class="error-list" ></div>
-    <form id="upload-form" action="/m/upload/" method="post" enctype="multipart/form-data">
+    <form class="panel" id="upload-form" action="/m/upload/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <button id="upload-button" class="action" type="submit"> Upload </button>
         {{ form }}

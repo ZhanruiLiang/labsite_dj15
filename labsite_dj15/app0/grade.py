@@ -17,7 +17,7 @@ class Run(models.Model):
     """
     procID = models.CharField(max_length=10)
     state = models.CharField(max_length=10)
-    start_time = models.DateTimeField(auto_now=True)
+    start_time = models.DateTimeField(auto_now_add=True)
 
     # def __init__(self, *args, **kwargs):
     #     super(Run, self).__init__(*args, **kwargs)

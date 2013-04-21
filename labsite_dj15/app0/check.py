@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 class Compilation(models.Model):
     subpath = models.FilePathField(max_length=100, blank=True)
     submission = models.ForeignKey(Submission)
+    time = models.DateTimeField(auto_now_add=True, null=True)
     cmd = models.TextField(blank=True, default='')
     exe = models.FilePathField(blank=True, max_length=512)
     result = models.TextField(blank=True, default='')
@@ -35,6 +36,7 @@ class Decompression(models.Model):
     submission = models.OneToOneField(Submission, related_name='decompression')
     result = models.TextField(blank=True, default='')
     path = models.FilePathField(max_length=512)
+    time = models.DateTimeField(auto_now_add=True, null=True)
     type = models.TextField(max_length=64)
     def delete(self, *args, **kwargs):
         try:

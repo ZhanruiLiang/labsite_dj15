@@ -13,6 +13,8 @@
         </title>
 
         {% block head_includes %}
+        <link rel="home" href="/m/my/" />
+        <link rel="next" href="{{next}}" />
         <link rel="stylesheet" href="{{ STATIC_URL }}css/master.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}css/nav.css" />
         <!-- <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css" /> -->
@@ -26,6 +28,7 @@
         <script type="text/javascript" src="{{ STATIC_URL }}js/Markdown.Sanitizer.js" ></script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.scrollTo-1.4.3.1-min.js"></script>
         <script type="text/coffeescript" src="{{ STATIC_URL }}coffee/ajax.coffee"></script>
+        <script type="text/coffeescript" src="{{ STATIC_URL }}coffee/grader-color.coffee"></script>
         {% endblock %}
     </head>
     <body>
