@@ -298,9 +298,9 @@ def show_submission(request, submissionID):
     user = request.user
     try:
         if user.usertype == 'TA':
-            submissions = Submission.objects.filter(
-                    grader=user, finished=0, retcode=0)
             submission = Submission.objects.get(id=submissionID)
+            submissions = Submission.objects.filter(
+                    assignment=submission.assignment, grader=user, finished=0, retcode=0)
             for nextSubm in submissions:
                 if nextSubm != submission:
                     break
