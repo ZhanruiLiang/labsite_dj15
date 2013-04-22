@@ -66,11 +66,11 @@
                 <span class="choice">
                     Points: 
                     {% for i in prob.points_range %}
-                        <input type="radio" name="score" id="score-{{i}}" value="{{i}}"
+                        <input type="radio" name="score" id="{{prob.name}}-score-{{i}}" value="{{i}}"
                         {% if not score and i == prob.points or score and i == score.score %}
                             checked="checked"
                         {%endif%}/>
-                        <label for="score-{{i}}">{{i}} points </label>
+                        <label for="{{prob.name}}-score-{{i}}">{{i}} points </label>
                     {% endfor %}
                 </span>
                 <button type="submit" class="grade action">Grade this</button>
