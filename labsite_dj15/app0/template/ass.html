@@ -30,13 +30,11 @@ Assignment - {{ ass.title }}
         <h2>Admin</h2>
         <p>
             <div id="TAs" class="panel">
-                {% for ta, fin, tot in TADatas %}
+                {% for ta in TAs %}
                 <span class="TA" data-username="{{ta.username}}"> 
                     <label for="check-{{ta.username}}" class="grader-name">{{ta.username}}</label>
                     <input id="check-{{ta.username}}" type="checkbox" />
-                    {% if tot %}
-                        <span class="ta-status">({{fin}}/{{tot}})</span>
-                    {% endif %}
+                    <span class="ta-status" data-username="{{ta.username}}"></span>
                 </span>
                 {% endfor %}
                 <br/>

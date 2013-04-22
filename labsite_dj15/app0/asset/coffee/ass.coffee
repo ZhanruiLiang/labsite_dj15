@@ -31,6 +31,9 @@ $ ->
       url: '/m/submission_list/' + g_assID + '/'
       type: 'get'
       success: (data) ->
+        $('.ta-status').each (i, elem)->
+          elem = $ elem
+          elem.html data.taStatus[elem.data 'username']
         $("#submissions").html data.list
         $("#submissions button.delete").click (event)->
           sid = $(event.target).data "sid"

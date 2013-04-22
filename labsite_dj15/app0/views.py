@@ -132,15 +132,10 @@ def show_ass(request, assID=None):
     if assID:
         assignment = spec.Assignment.objects.get(id=assID)
         TAs = account.User.objects.filter(usertype='TA')
-        TADatas = []
-        for ta in TAs:
-            tot = assignment.submission_set.filter(grader=ta)
-            fin = tot.filter(finished=True)
-            TADatas.append((ta, fin.count(), tot.count()))
         return make_response(request, 'ass.html', {
             'ass': assignment, 
             'form': UploadForm(),
-            'TADatas': TADatas,
+            'TAs': TAs,
             })
     else:
         asss = spec.Assignment.objects.all()
@@ -269,12 +264,20 @@ def submission_list(request, assID=None):
         submissions = Submission.objects
     if request.user.usertype == 'student':
         submissions = submissions.filter(user=request.user)
+    else:
+        TAs = account.User.objects.filter(usertype='TA')
+        taStatus = {}
+        for ta in TAs:
+            tot = assignment.submission_set.filter(grader=ta)
+            fin = tot.filter(finished=True)
+            taStatus[ta.username] = '({}/{})'.format(fin.count(), tot.count())
     submissions = submissions.extra(order_by=('-time',))
     return json.dumps({
         'list': get_template('submission_list.html').render(Context(dict(
             submissions=submissions,
             user=user,
             ))),
+        'taStatus': taStatus,
         })
 
 KnownTypes = ['.cpp', '.cc', '.h', '.cxx', '.hpp', '.c', '.txt', '.mkd']
