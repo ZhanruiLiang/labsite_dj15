@@ -1,10 +1,24 @@
 .item-ass {
-  background-color: #f2f8ff;
+  transition-property: box-shadow;
+  transition-duration: 1.2s;
+
   border-radius: 5px;
-  list-style-type: square;
+  list-style-type: none;
   padding: 10px 16px;
-  margin-bottom: 10px;
+  margin: 10px 20px;
   font-size: 120%;
+  display: inline-block;
+  border: solid 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  max-width: 220px;
+  cursor: pointer;
+}
+
+.item-ass:hover {
+  transition-property: box-shadow;
+  transition-duration: 0.5s;
+  box-shadow: 0 0 10px #44f;
 }
 
 .item-ass h2 {
@@ -13,14 +27,33 @@
 }
 
 .item-ass.submitted {
-  background-color: #c0eec5;
+  background-color: #a5ec92;
+}
+
+.item-ass.graded {
+  background-color: #b3ebee;
+}
+
+.submitted .note {
+  color: #4bb15b;
+}
+
+.graded .note {
+  color: #726c85;
 }
 
 .note {
-  color: #4bb15b;
   text-shadow: 2px 1px 8px rgba(50, 50, 50, .5);
   font-weight: bold;
-  font-size: 370%;
+  font-size: 70%;
   float: right;
   font-family: 'serif';
+}
+
+p {
+  font-size: 90%;
+}
+
+a {
+  text-decoration: none;
 }

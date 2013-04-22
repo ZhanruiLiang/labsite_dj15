@@ -139,8 +139,14 @@ def show_ass(request, assID=None):
             })
     else:
         asss = spec.Assignment.objects.all()
+        datas = []
+        user = request.user
+        for ass in asss:
+            submitted = bool(ass.submission_set.filter(user=user, retcode=0))
+            graded = bool(ass.submission_set.filter(user=user, finished=True))
+            datas.append((ass, submitted, graded))
         return make_response(request, 'ass_list.html', {
-            'datas': [(ass, ass.is_submitted(request.user)) for ass in asss],
+            'datas': datas
             })
 
 @csrf_protect
@@ -262,11 +268,11 @@ def submission_list(request, assID=None):
         submissions = assignment.submission_set
     else:
         submissions = Submission.objects
+    taStatus = {}
     if request.user.usertype == 'student':
         submissions = submissions.filter(user=request.user)
     else:
         TAs = account.User.objects.filter(usertype='TA')
-        taStatus = {}
         for ta in TAs:
             tot = assignment.submission_set.filter(grader=ta)
             fin = tot.filter(finished=True)

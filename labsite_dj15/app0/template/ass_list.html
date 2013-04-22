@@ -5,24 +5,27 @@ Assignments
 {% endblock %}
 
 {% block body %}
-<link rel="stylesheet" href="{{ STATIC_URL }}/css/ass_list.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}css/ass_list.css" />
+<script type="text/coffeescript" src="{{STATIC_URL}}coffee/ass_list.coffee"></script>
 <ul>
-    {% for ass, submitted in datas %}
-    <li class="item-ass {% if submitted %}submitted{% endif %}">
-    <h2>
-    <a href="{{ass.url}}"> {{ass.title}} </a>  
-    {% if submitted %}
-        <span class="note"> submitted</span>
-    {% endif %}
-    </h2>
-    <p>
-    Due date: {{ass.duetime}} <br/>
-    Total submissions: {{ass.count}} <br/>
-    {% if user.usertype == "TA" %}
-        <!--<a href="/m/delete_ass/{{ass.id}}"> Delete {{ass.title}} </a> <br>-->
-        <a href="/m/edit/{{ass.id}}/"> Edit this assignment </a>
-    {% endif %}
-    </p>
+    {% for ass, submitted, graded in datas %}
+    <li class="item-ass {% if graded %}graded{% elif submitted %}submitted{% endif %}">
+      <a href="{{ass.url}}"> 
+        <h2>{{ass.title}}</h2>
+      </a>  
+      {% if graded %}
+          <span class="note"> Graded </span>
+      {% elif submitted %}
+          <span class="note"> Submitted</span>
+      {% endif %}
+      <p>
+      Due date: {{ass.duetime|date:"Y-m-d H:i"}} <br/>
+      Total submissions: {{ass.count}} <br/>
+      {% if user.usertype == "TA" %}
+          <!--<a href="/m/delete_ass/{{ass.id}}"> Delete {{ass.title}} </a> <br>-->
+          <a href="/m/edit/{{ass.id}}/"> Edit this assignment </a>
+      {% endif %}
+      </p>
     </li>
     {% endfor %}
 </ul>
