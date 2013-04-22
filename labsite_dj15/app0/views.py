@@ -473,17 +473,18 @@ def do_assign(request, assID):
         TAs.append(account.User.objects.get(username=name))
 
     assignment = Assignment.objects.get(id=assID)
-    submissions = Submission.objects.filter(retcode=0, assignment=assignment)
+    submissions = Submission.objects.filter(retcode=0, finished=False, assignment=assignment)
     m = len(TAs)
     subms = {}
     for i, subm in enumerate(submissions):
-        if not subm.finished:
-            if subm.user in subms:
-                old = subms[subm.user]
-                if subm.time > old.time:
-                    subms[subm.user] = subm
-            else:
+        if subm.user in subms:
+            old = subms[subm.user]
+            if subm.time > old.time:
+                old.grader = None
+                old.save()
                 subms[subm.user] = subm
+        else:
+            subms[subm.user] = subm
     for i, subm in enumerate(subms.itervalues()):
         assignTA = TAs[i % m]
         subm.grader = assignTA
