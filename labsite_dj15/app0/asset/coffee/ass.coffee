@@ -52,6 +52,9 @@ $ ->
           message = tr.data 'message'
           updateError message
         updateGrader()
+        $('#submissions table').dataTable
+          iDisplayLength: 30
+          bLengthChange: false
 
   updateError = (message) ->
     errorList = $('#error-list')

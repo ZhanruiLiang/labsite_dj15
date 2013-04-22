@@ -1,56 +1,61 @@
 {% if submissions %}
-    <table>
-    <tr>
-        <th>ID</th>
-        {% if user.usertype == "TA" %}
-        <th>User</th>
-        {% endif %}
-        <th>Filename</th>
-        <th>Time</th> 
-        <th>State</th>
-        <th>Grader</th>
-        <th>Score</th>
-        <th>Action</th>
-    </tr>
-    {% for sub in submissions %}
-    <tr data-sid="{{sub.id}}" data-retcode="{{sub.retcode}}" data-message="{{sub.message}}">
-            <td>{{ sub.id }}</td>
-            {% if user.usertype == "TA" %}
-            <td> {{sub.user.username}}/{{sub.user.studentID}} </td>
-            {% endif %}
-            <td>{{ sub.filename }}</td>
-            <td>{{ sub.time | date:"Y-m-d H:i:s"}}</td>
-            {% if sub.retcode == 0 %} 
-                <td class="success"> success </td>
-            {% else %}
-                <td class="fail"> fail </td>
-            {% endif %}
-            <td>
-                {% if sub.grader %}
-                <span class="grader-name">{{ sub.grader.username }}</span>
-                {% else %}
-                    <span class="fail">
-                        Not assigned
-                    </span>
+    <table class="dataTable">
+        <thead>
+            <tr>
+                <td>ID</td>
+                {% if user.usertype == "TA" %}
+                <td>User</td>
+                <td>StudentID</td>
                 {% endif %}
-            </td>
-            <td>
-                {% if not sub.finished %}
-                <span class="fail"> Not graded </span>
-                {% else %}
-                <span class="success"> {{ sub.total_score }} </span>
-                {% endif %}
-            </td>
-            <td>
-                {% if sub.user == user %}
-                    <button class="delete action warn" data-sid="{{sub.id}}">delete</button>
-                {% endif %}
-                {% if sub.retcode == 0 or sub.compilation_set.count %}
-                    <button class="action view" data-sid="{{sub.id}}">view</button>
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor %}
+                <td>Filename</td>
+                <td>Time</td> 
+                <td>State</td>
+                <td>Grader</td>
+                <td>Score</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sub in submissions %}
+            <tr data-sid="{{sub.id}}" data-retcode="{{sub.retcode}}" data-message="{{sub.message}}">
+                    <td>{{ sub.id }}</td>
+                    {% if user.usertype == "TA" %}
+                    <td>{{sub.user.username}}</td>
+                    <td>{{sub.user.studentID}}</td>
+                    {% endif %}
+                    <td>{{ sub.filename }}</td>
+                    <td>{{ sub.time | date:"Y-m-d H:i:s"}}</td>
+                    {% if sub.retcode == 0 %} 
+                        <td class="success"> success </td>
+                    {% else %}
+                        <td class="fail"> fail </td>
+                    {% endif %}
+                    <td>{% if sub.retcode == 0 %}
+                            {% if sub.grader %}
+                            <span class="grader-name">{{ sub.grader.username }}</span>
+                            {% else %}
+                            <span class="fail">none</span>
+                            {% endif %}
+                        {% endif %}</td>
+                    <td>
+                        {% if sub.retcode == 0 %}
+                            {% if not sub.finished%}
+                            {% else %}
+                            <span class="success">{{ sub.total_score }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if sub.user == user %}
+                            <button class="delete action warn" data-sid="{{sub.id}}">delete</button>
+                        {% endif %}
+                        {% if sub.retcode == 0 or sub.compilation_set.count %}
+                            <button class="action view" data-sid="{{sub.id}}">view</button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% else %}
     You have not submitted any things on this assignment.

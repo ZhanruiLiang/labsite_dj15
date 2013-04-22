@@ -132,10 +132,15 @@ def show_ass(request, assID=None):
     if assID:
         assignment = spec.Assignment.objects.get(id=assID)
         TAs = account.User.objects.filter(usertype='TA')
+        TADatas = []
+        for ta in TAs:
+            tot = assignment.submission_set.filter(grader=ta)
+            fin = tot.filter(finished=True)
+            TADatas.append((ta, fin.count(), tot.count()))
         return make_response(request, 'ass.html', {
             'ass': assignment, 
             'form': UploadForm(),
-            'TAs': TAs,
+            'TADatas': TADatas,
             })
     else:
         asss = spec.Assignment.objects.all()
@@ -471,30 +476,10 @@ def do_assign(request, assID):
     TAs = []
     for name in json.loads(request.POST['TAs']):
         TAs.append(account.User.objects.get(username=name))
+    assignment = spec.Assignment.objects.get(id=assID)
+    grade_.assign(assignment, TAs)
 
-    assignment = Assignment.objects.get(id=assID)
-    submissions = Submission.objects.filter(retcode=0, finished=False, assignment=assignment)
-    m = len(TAs)
-    subms = {}
-    for i, subm in enumerate(submissions):
-        if subm.user in subms:
-            old = subms[subm.user]
-            if subm.time > old.time:
-                old.grader = None
-                old.save()
-                subms[subm.user] = subm
-        else:
-            subms[subm.user] = subm
-    for i, subm in enumerate(subms.itervalues()):
-        assignTA = TAs[i % m]
-        subm.grader = assignTA
-        subm.save()
-    msg = 'Success. Assigned {num} submissions to {numTA} TAs.'.format(
-            num=len(submissions), numTA=m)
-    return json.dumps({
-        'code': 0,
-        'message': msg,
-        })
+    return json.dumps({'code': 0})
 
 @usertype_only('TA')
 def delete_ass(request, assID):

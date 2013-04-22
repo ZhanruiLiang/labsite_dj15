@@ -1,15 +1,13 @@
+{% load static %}
+{% get_static_prefix as STATIC_URL %}
 <div id="nav-bar">
     <div class="nav-inner">
-        <span id="logo">
-            <b> Simple Lab Site </b>
-        </span>
-        <span class="nav-list">
-            <ul class="nav-list">
+        <span id="logo"> [drum] </span>
+            <span class="nav-list">
                 {% for name, url in navItems %}
-                <li> <a href="{{url}}"> {{name}}</a></li>
+                <span class="item" > <a href="{{url}}"> {{name}}</a></span>
                 {% endfor %}
-            </ul>
-        </span>
+            </span>
         {% if user.is_authenticated %}
             <span class="nav-user">
                 <span class="username">{{user.username}}</span>

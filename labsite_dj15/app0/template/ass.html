@@ -9,6 +9,7 @@ Assignment - {{ ass.title }}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/ass.css" />
 <script type="text/coffeescript" src="{{ STATIC_URL }}coffee/grader-color.coffee"></script>
 <script type="text/coffeescript" src="{{ STATIC_URL }}coffee/ass.coffee"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -29,10 +30,13 @@ Assignment - {{ ass.title }}
         <h2>Admin</h2>
         <p>
             <div id="TAs" class="panel">
-                {% for ta in TAs %}
+                {% for ta, fin, tot in TADatas %}
                 <span class="TA" data-username="{{ta.username}}"> 
                     <label for="check-{{ta.username}}" class="grader-name">{{ta.username}}</label>
                     <input id="check-{{ta.username}}" type="checkbox" />
+                    {% if tot %}
+                        <span class="ta-status">({{fin}}/{{tot}})</span>
+                    {% endif %}
                 </span>
                 {% endfor %}
                 <br/>

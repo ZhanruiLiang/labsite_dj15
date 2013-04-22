@@ -62,3 +62,6 @@ td.fail:hover {
     top: 3px;
 }
 
+#submissions table {
+  font-size: 85%;
+}

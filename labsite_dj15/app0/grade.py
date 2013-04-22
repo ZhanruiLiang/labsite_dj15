@@ -93,6 +93,36 @@ def clear():
             if (now - run.start_time).seconds > TIME_OUT:
                 run.stop()
 
+def assign(assignment, TAs):
+    submissions = filter_last(Submission.objects.filter(retcode=0, assignment=assignment))
+    cnt = {ta: 0 for ta in TAs}
+    for subm in submissions:
+        grader = None
+        if subm.finished:
+            if subm.grader in TAs:
+                grader = cnt[subm.grader]
+        else:
+            grader = min(cnt.items(), key=lambda (c,x): c)[1]
+        if grader:
+            cnt[grader] += 1
+            if subm.grader != grader:
+                subm.grader = grader
+                subm.save()
+
+def filter_last(submissions):
+    subms = {}
+    for subm in submissions:
+        if subm.user in subms:
+            old = subms[subm.user]
+            if subm.time > old.time:
+                if not old.finished:
+                    old.grader = None
+                    old.save()
+                subms[subm.user] = subm
+        else:
+            subms[subm.user] = subm
+    return subms.values()
+
 def start_clear():
     Thread(target=clear).start()
 # start_clear()

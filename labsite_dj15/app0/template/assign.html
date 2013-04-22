@@ -1,4 +1,35 @@
 {% extends "master.html" %}
 
+{% block title %}
+<title> Assigning Graders</title>
+{% endblock %}
+
 {% block body %}
+
+<h2> TAs</h2>
+<div id="TAs">
+  {% for ta in TAs %}
+  <span class="TA">
+    <input id="check-{{ta.username}}" type="checkbox" />
+    <label for="check-{{ta.username}}">
+        {{ ta.username }}
+    </label>
+  </span>
+  {% endfor %}
+</div>
+
+<h2> Submissions </h2>
+
+<div class="panel">
+  <button class="action"> Assign </button>
+</div>
+
+<div id="submissions">
+  {% for subm in submissions %}
+  <span class="subm {% if subm.total_score is not None %} graded {%endif%}">
+    {{ subm.id }}
+  </span>
+  {% endfor %}
+</div>
+
 {% endblock %}
