@@ -14,7 +14,9 @@ Post Assignment
         <table>
             {{ form.as_table}}
         </table>
-        <button type="submit"> Post </button>
+        {% block button %}
+        <button type="submit" class="action"> Post </button>
+        {% endblock %}
         <input type="hidden" name="next" value="{{next}}"/>
     </form>
 </div>

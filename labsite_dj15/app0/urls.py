@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     # about submissions
     # url(r'^ass/(?P<assID>\w+)/list/$', view.ass_list),
     url(r'^subm/((?P<submissionID>\w+)/)$', views.show_submission), # for student, TA
+    url(r'^summary/', views.show_summary),
     # url(r'^assign/(?P<assID>\w+)/$', views.show_assign),
     # AJAX views
     url(r'^upload/$', views.upload), # for student, TA

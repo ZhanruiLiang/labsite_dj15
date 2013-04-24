@@ -124,5 +124,7 @@ def filter_last(submissions):
     return subms.values()
 
 def start_clear():
-    Thread(target=clear).start()
-# start_clear()
+    th = Thread(target=clear)
+    th.daemon = True
+    th.start()
+start_clear()

@@ -18,6 +18,7 @@ import logging
 import os
 import codecs
 import traceback
+import summary
 
 from upload import UploadForm, Submission, Score, ScoreForm,  upload as _upload
 from check import check_submission, Decompression, Compilation
@@ -297,7 +298,7 @@ def detect_type(path):
     return None
 
 def read_content(fullpath):
-    guess = ['utf-8', 'gbk']
+    guess = ['utf-8', 'gbk', 'utf-16']
     for enc in guess:
         try: return codecs.open(fullpath, encoding=enc).read()
         except Exception as e: 
@@ -496,3 +497,9 @@ def delete_ass(request, assID):
     assignment.delete()
     return HttpResponseRedirect(settings.ASSIGNMENT_URL)
 
+@usertype_only('TA')
+def show_summary(request):
+    heads, data = summary.summary()
+    return make_response(request, 'summary.html', {
+        'heads': heads, 'data': data,
+        })

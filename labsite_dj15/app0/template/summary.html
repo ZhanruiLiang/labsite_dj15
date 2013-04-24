@@ -1,0 +1,28 @@
+{% extends "master.html" %}
+
+{% block title %}
+Summary
+{% endblock %}
+
+{% block body %}
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/summary.coffee"></script>
+<table class="dataTable">
+  <thead>
+    <tr>
+      {% for head in heads %}
+      <td>{{head}}</td>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+      <tr>
+      {% for cell in row %}
+        <td>{{cell}}</td>
+      {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
