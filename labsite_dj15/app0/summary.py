@@ -19,6 +19,6 @@ def summary():
 def get_last_submission(user, ass):
     subms = user.submissions.filter(assignment=ass, retcode=0).extra(order_by=['-time'])
     try:
-        return subms[0].total_score()
+        return subms[0]
     except:
-        return ''
+        return None

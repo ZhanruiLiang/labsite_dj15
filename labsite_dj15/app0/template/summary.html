@@ -19,7 +19,16 @@ Summary
     {% for row in data %}
       <tr>
       {% for cell in row %}
-        <td>{{cell}}</td>
+      <td>
+        {% if cell.finished %}
+          <a href="{{cell.url}}">{{cell.total_score}}</a>
+        {% elif cell.retcode == 0 %}
+          not graded
+        {% elif cell == None %}
+        {% else %}
+          {{cell}}
+        {% endif %}
+      </td>
       {% endfor %}
       </tr>
     {% endfor %}
