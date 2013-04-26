@@ -6,7 +6,6 @@ Post Assignment
 
 {% block body %}
 <link rel="stylesheet" href="{{STATIC_URL}}css/post.css" />
-<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/post.coffee"></script>
 <div class="wrap">
 <div id="form">
     <form action="" method="post" enctype="multipart/form-data">
@@ -26,4 +25,9 @@ Post Assignment
     </div>
 </div>
 </div>
+{% endblock %}
+
+{% block foot_includes %}
+{{ block.super }}
+<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/post.coffee"></script>
 {% endblock %}

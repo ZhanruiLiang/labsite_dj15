@@ -5,8 +5,6 @@ Summary
 {% endblock %}
 
 {% block body %}
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/summary.coffee"></script>
 <table class="dataTable">
   <thead>
     <tr>
@@ -34,4 +32,6 @@ Summary
     {% endfor %}
   </tbody>
 </table>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/summary.coffee"></script>
 {% endblock %}

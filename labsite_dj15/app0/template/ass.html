@@ -7,9 +7,6 @@ Assignment - {{ ass.title }}
 {% block head_includes %}
 {{ block.super }}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/ass.css" />
-<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/grader-color.coffee"></script>
-<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/ass.coffee"></script>
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -62,4 +59,10 @@ Assignment - {{ ass.title }}
     <div id="submissions">
     </div>
 </div>
+{% endblock %}
+{% block foot_includes %}
+{{ block.super }}
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/grader-color.coffee"></script>
+<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/ass.coffee"></script>
 {% endblock %}
