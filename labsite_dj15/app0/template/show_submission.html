@@ -3,6 +3,7 @@
 {% block head_includes %}
     {{ block.super }}
     <link rel="back" href="{{ass.url}}" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/subm.css" />
 {% endblock %}
 {% block title %}
 Submission #{{submission.id}} for assignment "{{ass.title}}"
@@ -10,8 +11,6 @@ Submission #{{submission.id}} for assignment "{{ass.title}}"
 
 {% block body %}
 <!--<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=cpp&skin=desert"></script>-->
-<link rel="stylesheet" href="{{STATIC_URL}}css/subm.css" />
-<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/subm.coffee"></script>
 
 <div id="themes" class="panel">
     <link id="theme-default" disabled="disabled" rel="stylesheet" href="{{STATIC_URL}}google-code-prettify/prettify.css" />
@@ -33,6 +32,8 @@ Submission #{{submission.id}} for assignment "{{ass.title}}"
 {% endblock %}
 
 {% block foot_includes %}
+{{ block.super }}
 <script src="{{STATIC_URL}}google-code-prettify/prettify.js"></script>
 <script type="text/javascript">prettyPrint();</script>
+<script type="text/coffeescript" src="{{ STATIC_URL }}/coffee/subm.coffee"></script>
 {% endblock %}
