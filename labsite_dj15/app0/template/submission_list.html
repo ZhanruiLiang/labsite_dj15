@@ -48,7 +48,7 @@
                     </td>
                     <td>
                         <!-- Penalty -->
-                        {% if sub.retcode == 0 and sub.finished and sub.penalty%}
+                        {% if sub.retcode == 0 and sub.penalty%}
                             <span class="fail">{{ sub.penalty }}</span>
                         {% endif %}
                     </td>
