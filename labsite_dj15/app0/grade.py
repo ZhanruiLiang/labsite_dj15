@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from upload import Submission, Score
 from subprocess import Popen, PIPE
 from datetime import datetime
@@ -24,7 +25,7 @@ class Run(models.Model):
 
     @property
     def proc(self):
-        return Run.procs[int(self.procID)]
+        return Run.procs.get(int(self.procID), None)
 
     def interact(self, data=None):
         proc = self.proc
@@ -56,7 +57,8 @@ class Run(models.Model):
         return (dataOut, dataErr)
 
     def stop(self):
-        if self.proc.poll() is None:
+        proc = self.proc
+        if proc and proc.poll() is None:
             # proc not ended
             self.proc.kill()
             self.state = proc.poll()
@@ -85,11 +87,11 @@ def run(compilation, args=None):
 
 def clear():
     TIME_OUT = 5 * 60
-    INTERVAL = 60
+    INTERVAL = 5
     while 1:
         sleep(INTERVAL)
-        now = datetime.today()
-        for run in Run.objects.all():
+        now = timezone.now()
+        for run in Run.objects.filter(state=''):
             if (now - run.start_time).seconds > TIME_OUT:
                 run.stop()
 
