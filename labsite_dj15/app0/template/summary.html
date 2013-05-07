@@ -19,9 +19,10 @@ Summary
       {% for cell in row %}
       <td>
         {% if cell.finished %}
-          <a href="{{cell.url}}">{{cell.total_score}}</a>
+          <a href="{{cell.url}}">{{cell.total_score_final}}</a>
         {% elif cell.retcode == 0 %}
-          not graded
+          <!--not graded-->
+          <span title="Not graded">?</span>
         {% elif cell == None %}
         {% else %}
           {{cell}}
