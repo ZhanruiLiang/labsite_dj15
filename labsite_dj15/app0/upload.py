@@ -34,6 +34,17 @@ class Submission(models.Model):
     def total_score(self):
         return sum(s.score for s in self.score_set.all())
 
+    def total_score_final(self):
+        return self.total_score() * max(.5, (1 - .1 * self.penalty()))
+
+    def penalty(self):
+        duetime = self.assignment.duetime
+        if self.time > duetime:
+            penalty = max(1, (self.time - duetime).days)
+        else:
+            penalty = 0
+        return penalty
+
     def get_score(self, problem_name):
         try:
             score = self.score_set.get(problem_name=problem_name)

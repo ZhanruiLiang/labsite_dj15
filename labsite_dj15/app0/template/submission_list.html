@@ -12,6 +12,7 @@
                 <td>State</td>
                 <td>Grader</td>
                 <td>Score</td>
+                <td>Penalty</td>
                 <td>Action</td>
             </tr>
         </thead>
@@ -41,8 +42,14 @@
                         {% if sub.retcode == 0 %}
                             {% if not sub.finished%}
                             {% else %}
-                            <span class="success">{{ sub.total_score }}</span>
+                            <span class="success">{{ sub.total_score_final }}</span>
                             {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <!-- Penalty -->
+                        {% if sub.retcode == 0 and sub.finished and sub.penalty%}
+                            <span class="fail">{{ sub.penalty }}</span>
                         {% endif %}
                     </td>
                     <td>
