@@ -87,12 +87,12 @@ def run(compilation, args=None):
 
 def clear():
     TIME_OUT = 5 * 60
-    INTERVAL = 5
+    INTERVAL = 60
     while 1:
         sleep(INTERVAL)
         now = timezone.now()
         for run in Run.objects.filter(state=''):
-            if (now - run.start_time).seconds > TIME_OUT:
+            if (now - run.start_time).total_seconds() > TIME_OUT:
                 run.stop()
 
 def assign(assignment, TAs):
