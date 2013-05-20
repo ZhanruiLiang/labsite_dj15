@@ -61,9 +61,8 @@ class Run(models.Model):
         if proc and proc.poll() is None:
             # proc not ended
             proc.kill()
-            proc.wait()
-            self.state = proc.poll()
-            self.save()
+        self.state = '137'
+        self.save()
 
     def delete(self):
         logger.debug('runID {} delete'.format(self.id))
@@ -96,7 +95,6 @@ def clear():
             logger.debug("now:{} run.start_time:{} secs:{}".format(now, run.start_time, (now - run.start_time).total_seconds()))
             if (now - run.start_time).total_seconds() > TIME_OUT:
                 run.stop()
-                run.state = '137'
 
 def assign(assignment, TAs):
     submissions = filter_last(Submission.objects.filter(retcode=0, assignment=assignment))
