@@ -29,6 +29,11 @@ class Run(models.Model):
 
     def interact(self, data=None):
         proc = self.proc
+        if proc is None:
+            return (137, '', 'Process killed')
+        retcode = proc.poll()
+        if retcode is not None:
+            return (retcode, proc.stdout.read(), proc.stderr.read())
         if data is not None:
             proc.stdin.write(data)
         dataOut, dataErr = '', ''
@@ -51,10 +56,7 @@ class Run(models.Model):
             clk = clock()
             if clk - startClock > timeout: break
 
-        if proc.poll() is not None:
-            # ended
-            self.stop()
-        return (dataOut, dataErr)
+        return (proc.poll(), dataOut, dataErr)
 
     def stop(self):
         proc = self.proc

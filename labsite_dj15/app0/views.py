@@ -427,13 +427,20 @@ def interact_prog(request, runID):
     try:
         data = request.POST['input']
         prog = grade_.Run.objects.get(id=runID)
-        out, err = prog.interact(data)
+        # try:
+        retcode, out, err = prog.interact(data)
         return json.dumps({
             'code': 0,
-            'retcode': prog.proc.poll(),
+            'retcode': retcode,
             'stdout': out,
             'stderr': err,
             })
+        # except RunningError as e:
+        #     return json.dumps({
+        #         'code': e.code,
+        #         'retcode': e.retcode,
+        #         'stdout': e.stdout,
+        #         'stderr': e.stderr,
     except Exception as e:
         logger.debug(traceback.format_exc())
         return json.dumps({

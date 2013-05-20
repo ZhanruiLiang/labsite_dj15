@@ -116,6 +116,8 @@ class Problem
         if code == 0
           @update_console (pre data.stdout), 0
           @update_console (pre data.stderr), 1
+          if data.retcode != null
+            @update_console (pre 'retcode: ' + data.retcode), 1
           if data.retcode or data.retcode == 0
             @run_end()
           else
