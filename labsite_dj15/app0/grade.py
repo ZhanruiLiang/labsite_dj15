@@ -60,12 +60,13 @@ class Run(models.Model):
         proc = self.proc
         if proc and proc.poll() is None:
             # proc not ended
-            self.proc.kill()
+            proc.kill()
+            proc.wait()
             self.state = proc.poll()
             self.save()
 
     def delete(self):
-        # logger.debug('runID {} delete'.format(self.id))
+        logger.debug('runID {} delete'.format(self.id))
         self.stop()
         try: del Run.procs[int(self.procID)]
         except KeyError: pass
@@ -82,18 +83,20 @@ def run(compilation, args=None):
     prog = Run(procID=proc.pid, state='')
     prog.save()
     # DEBUG
-    # logger.debug('runID {} start'.format(prog.id))
+    logger.debug('runID {} start'.format(prog.id))
     return prog
 
 def clear():
     TIME_OUT = 5 * 60
-    INTERVAL = 60
+    INTERVAL = 2
     while 1:
         sleep(INTERVAL)
         now = timezone.now()
         for run in Run.objects.filter(state=''):
+            logger.debug("now:{} run.start_time:{} secs:{}".format(now, run.start_time, (now - run.start_time).total_seconds()))
             if (now - run.start_time).total_seconds() > TIME_OUT:
                 run.stop()
+                run.state = '137'
 
 def assign(assignment, TAs):
     submissions = filter_last(Submission.objects.filter(retcode=0, assignment=assignment))
