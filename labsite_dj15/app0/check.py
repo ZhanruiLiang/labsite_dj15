@@ -205,8 +205,8 @@ def compare(problem, subm1, fpath1, subm2, fpath2, force=False):
     # proc = subprocess.Popen(['diff', '--suppress-common-lines', 
     #     fullpath1, fullpath2], stdout=subprocess.PIPE])
     # proc.wait()
-    matcher = difflib.SequenceMatcher(a=text1, b=text2)
     if len(text1) > MIN_LINES and len(text2) > MIN_LINES:
+        matcher = difflib.SequenceMatcher(a=text1, b=text2)
         rate = matcher.ratio()
         if rate >= MIN_DIFF_RATE:
             differ = difflib.Differ()
@@ -219,8 +219,8 @@ def compare(problem, subm1, fpath1, subm2, fpath2, force=False):
         else:
             result = '(suppressed)'
     else:
-        ratio = 0
-        result = '(to short)'
+        rate = 0
+        result = '(too short)'
     dr = DiffResult(assignment=subm1.assignment, subm1=subm1, subm2=subm2,
             problem=problem.name, file1=fpath1, file2=fpath2, rate=rate, result=result)
     dr.save()
