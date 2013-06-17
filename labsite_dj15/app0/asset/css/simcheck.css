@@ -1,0 +1,32 @@
+div.diff {
+    padding: 5px;
+    margin: 10px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 3px;
+    position: relative;
+    overflow: auto;
+}
+ins { background-color: #9ae78b; }
+del { background-color: #ff7b8b; }
+code.diff-content{ font-size: 80%; line-height: 110%;}
+div.diff table td { width: 31%; }
+div.diff table { width: 98%; }
+
+pre {
+ white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+button.dismiss {
+    font-size: 80%;
+    font-weight: bold;
+    /* color: rgba(0, 100, 220, 0.5); */
+    font-family: sans;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+}

@@ -10,6 +10,8 @@ from errors import *
 from spec import Assignment
 from upload import Submission
 import logging
+import difflib
+import threading
 
 logger = logging.getLogger(__name__)
 
@@ -41,14 +43,36 @@ class Decompression(models.Model):
     def delete(self, *args, **kwargs):
         try:
             shutil.rmtree(self.path)
-        except e: 
+        except e:
             pass
             # logger.debug('remove "{}" failed: {}'.format(self.path, e))
         super(Decompression, self).delete(*args, **kwargs)
 
+class DiffResult(models.Model):
+    assignment = models.ForeignKey('Assignment')
+    problem = models.CharField(max_length=50)
+    subm1 = models.ForeignKey(Submission, related_name='diff_sumbs1')
+    subm2 = models.ForeignKey(Submission, related_name='diff_subms2')
+    file1 = models.FilePathField(max_length=512)
+    file2 = models.FilePathField(max_length=512)
+    rate = models.FloatField()
+    result = models.TextField()
+
+    def lines_with_mark(self):
+        lines = self.result.splitlines()
+        return [(x[:2], x) for x in lines]
+
+    def get_text1(self):
+        fullpath = os.path.join(self.subm1.decompression.path, self.file1)
+        return open(fullpath).read()
+
+    def get_text2(self):
+        fullpath = os.path.join(self.subm2.decompression.path, self.file2)
+        return open(fullpath).read()
+
 def pre_delete_deccompression(sender, *args, **kwargs):
     submission = kwargs['instance']
-    try: 
+    try:
         dec = submission.decompression
         dec.delete()
     except: pass
@@ -148,10 +172,107 @@ def compile_submission(submission, path):
         finally:
             comp.save()
 
-def similarity_check(fpath1, fpath2):
+MIN_DIFF_RATE = 0.80
+
+def get_fullpath(subm, fpath):
+    """
+    subm: submission object
+    fpath: for example 'HW5/3.14/xx.cpp'
+    """
+    return os.path.join(subm.decompression.path, fpath)
+
+def compare(problem, subm1, fpath1, subm2, fpath2, force=False):
     """
     Check the files from fpath1 and fpath2. If their content are the same,
     it's a copy. If their different lines are less than d%, hand it to human
     with the 'diff' message to justify.
+
+    fpath must be fullpath
     """
-    pass
+    try:
+        dr = DiffResult.objects.get(subm1=subm1, subm2=subm2, 
+                problem=problem.name, file1=fpath1, file2=fpath2)
+        if force: dr.delete()
+        else: return dr
+    except DiffResult.DoesNotExist:
+        pass
+    fullpath1 = get_fullpath(subm1, fpath1)
+    fullpath2 = get_fullpath(subm2, fpath2)
+    # logger.debug('simcheck:\n  path1:{}\n  path2:{}'.format(fullpath1, fullpath2))
+    text1 = open(fullpath1, 'r').read().splitlines()
+    text2 = open(fullpath2, 'r').read().splitlines()
+    # proc = subprocess.Popen(['diff', '--suppress-common-lines', 
+    #     fullpath1, fullpath2], stdout=subprocess.PIPE])
+    # proc.wait()
+    mather = difflib.SequenceMatcher(a=text1, b=text2)
+    rate = mather.ratio()
+    if rate >= MIN_DIFF_RATE:
+        differ = difflib.Differ()
+        result = []
+        for line in differ.compare(text1, text2):
+            mark = line[:2]
+            if mark == '+ ' or mark == '- ':
+                result.append(line)
+        result = '\n'.join(result)
+    else:
+        result = '(suppressed)'
+    dr = DiffResult(assignment=subm1.assignment, subm1=subm1, subm2=subm2,
+            problem=problem.name, file1=fpath1, file2=fpath2, rate=rate, result=result)
+    dr.save()
+
+def need_compare(fname):
+    return os.path.splitext(fname)[-1] in ['.h', '.cpp', '.hpp', '.cxx', '.cc', '.c']
+
+# use lock to make sure only one check runing at anytime
+gDiffCheckLock = threading.Lock()
+
+def start_diff_check(assignment, force=False):
+    if gDiffCheckLock.locked():
+        return 1
+    gDiffCheckLock.acquire()
+    th = threading.Thread(target=diff_check, args=(assignment, force))
+    th.start()
+    gDiffCheckLock.release()
+    return 0
+
+def diff_check(assignment, force=False):
+    if force:
+        assignment.diffresult_set.all().delete()
+    subms0 = list(assignment.submission_set.filter(retcode=0))
+    subms = []
+    for subm in subms0:
+        try:
+            subm.decompression.path
+            subms.append(subm)
+        except: pass
+    n = len(subms)
+    root = assignment.spec.name
+    def get_dir(subm, problem):
+        # try:
+        #     subm.decompression.path
+        # except:
+        #     logger.debug('subm:{s.id}'.format(s=subm))
+        dirpath = os.path.join(subm.decompression.path, root, problem.name)
+        files = filter(need_compare, os.listdir(dirpath))
+        return [os.path.join(root, problem.name, f) for f in files]
+
+    for problem in assignment.problems:
+        files = {}
+        for subm in subms:
+            files[subm] = get_dir(subm, problem)
+        if problem.type == 'code':
+            for i1 in xrange(n):
+                files1 = files[subms[i1]]
+                for i2 in xrange(i1+1, n):
+                    if subms[i2].user == subms[i1].user:
+                        continue
+                    files2 = files[subms[i2]]
+                    for fpath1 in files1:
+                        for fpath2 in files2:
+                            compare(problem, subms[i1], fpath1, subms[i2], fpath2)
+        elif problem.type == 'text':
+            for i1 in xrange(n):
+                fpath1 = fpath2 = os.path.join(root, problem.name)
+                for i2 in xrange(i1+1, n):
+                    compare(problem, subms[i1], fpath1, subms[i2], fpath2)
+

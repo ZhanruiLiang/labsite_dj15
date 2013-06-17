@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^edit/((?P<assID>\w+)/)?$', views.edit_ass), # view an assignment, TA only
     url(r'^post/$', views.post_ass), # post an assignment, TA only
     url(r'^delete_ass/(?P<assID>\w+)/', views.delete_ass),
+    url(r'^simcheck/(?P<assID>\w+)/', views.show_simcheck),
     # about submissions
     # url(r'^ass/(?P<assID>\w+)/list/$', view.ass_list),
     url(r'^subm/((?P<submissionID>\w+)/)$', views.show_submission), # for student, TA
@@ -30,4 +31,6 @@ urlpatterns = patterns('',
     url(r'^interact/(?P<runID>\w+)/$', views.interact_prog),
     url(r'^doassign/(?P<assID>\w+)/$', views.do_assign),
     url(r'^finish/(?P<submissionID>\w+)/', views.finish),
+    url(r'^startsimcheck/(?P<assID>\w+)/', views.start_simcheck),
+    url(r'^diff/(?P<diffID>\w+)/', views.diff_view),
 )

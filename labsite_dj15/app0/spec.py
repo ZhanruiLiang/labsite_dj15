@@ -125,6 +125,9 @@ class Assignment(models.Model):
         if not hasattr(self, '_spec'):
             self._spec = Spec.from_json(self.spec_str)
         return self._spec
+    @property
+    def problems(self):
+        return self.spec.problems
 
     def url(self):
         return '/m/ass/{}/'.format(self.id)

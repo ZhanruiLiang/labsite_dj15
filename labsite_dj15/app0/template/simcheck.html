@@ -1,0 +1,58 @@
+{% extends "master.html" %}
+
+{% block title %}
+Assignment - {{ ass.title }}
+{% endblock %}
+
+{% block head_includes %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/simcheck.css" />
+{% endblock %}
+
+{% block body %}
+<script type="text/javascript">
+    gAssID = "{{assignment.id}}";
+</script>
+<h2>Similarity Check For Assignment <a href="{{assignment.url}}">{{assignment.name}}</a></h2>
+<button id="start-button" class="action">Start check</button>
+<div id="diffviews">
+</div>
+<table class="dataTable" id="diff-results">
+    <thead>
+        <tr>
+        <td>problem</td>
+        <td>user1</td>
+        <td>user2</td>
+        <td>file1</td>
+        <td>file2</td>
+        <td>submission1</td>
+        <td>submission2</td>
+        <td>rate</td>
+        <td></td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for dr in results %}
+        <tr>
+            <td>{{dr.problem}}</td>
+            <td>{{dr.subm1.user}}</td>
+            <td>{{dr.subm2.user}}</td>
+            <td>{{dr.file1}}</td>
+            <td>{{dr.file2}}</td>
+            <td><a href="{{dr.subm1.url}}" target="_blank">{{dr.subm1.id}}</a></td>
+            <td><a href="{{dr.subm2.url}}" target="_blank">{{dr.subm2.id}}</a></td>
+            <td>{{dr.rate}}</td>
+            <td><button class="button action view-diff" data-diffid="{{dr.id}}">view</button></td>
+        </tr>
+    {%endfor%}
+    </tbody>
+</table>
+{% endblock %}
+{% block foot_includes %}
+{{ block.super }}
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.pretty-text-diff.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/diff_match_patch.js"></script>
+<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/grader-color.coffee"></script>
+<script type="text/coffeescript" src="{{ STATIC_URL }}coffee/simcheck.coffee"></script>
+{% endblock %}

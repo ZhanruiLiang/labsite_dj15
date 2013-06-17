@@ -13,12 +13,11 @@ from time import sleep
 import functools
 import datetime
 import json
-import spec
 import logging
 import os
 import codecs
 import traceback
-import summary
+import threading
 
 from upload import UploadForm, Submission, Score, ScoreForm,  upload as _upload
 from check import check_submission, Decompression, Compilation
@@ -27,6 +26,9 @@ from spec import Assignment
 from errors import *
 import account
 import grade as grade_
+import check
+import summary
+import spec
 
 logger = logging.getLogger(__name__)
 
@@ -510,3 +512,33 @@ def show_summary(request):
     return make_response(request, 'summary.html', {
         'heads': heads, 'data': data,
         })
+
+@wrap_json
+@usertype_only('TA')
+def start_simcheck(request, assID):
+    assignment = Assignment.objects.get(id=assID)
+    code = check.start_diff_check(assignment, force=True)
+    return json.dumps({
+        'code': code
+        })
+
+@usertype_only('TA')
+def show_simcheck(request, assID):
+    assignment = Assignment.objects.get(id=assID)
+    results = assignment.diffresult_set.extra(where=[
+                "rate > {min_rate}".format(min_rate=check.MIN_DIFF_RATE),
+                # "rate > {min_rate}".format(min_rate=0.2),
+                ])
+    return make_response(request, 'simcheck.html', {
+        'results': results,
+        'assignment': assignment,
+        })
+
+@usertype_only('TA')
+def diff_view(request, diffID):
+    diffResult = check.DiffResult.objects.get(id=diffID)
+    return make_response(request, 'diffview.html', {
+        "text1": diffResult.get_text1(),
+        "text2": diffResult.get_text2(),
+        })
+
