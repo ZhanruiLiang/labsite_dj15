@@ -173,6 +173,7 @@ def compile_submission(submission, path):
             comp.save()
 
 MIN_DIFF_RATE = 0.80
+MIN_LINES = 30
 
 def get_fullpath(subm, fpath):
     """
@@ -204,18 +205,22 @@ def compare(problem, subm1, fpath1, subm2, fpath2, force=False):
     # proc = subprocess.Popen(['diff', '--suppress-common-lines', 
     #     fullpath1, fullpath2], stdout=subprocess.PIPE])
     # proc.wait()
-    mather = difflib.SequenceMatcher(a=text1, b=text2)
-    rate = mather.ratio()
-    if rate >= MIN_DIFF_RATE:
-        differ = difflib.Differ()
-        result = []
-        for line in differ.compare(text1, text2):
-            mark = line[:2]
-            if mark == '+ ' or mark == '- ':
-                result.append(line)
-        result = '\n'.join(result)
+    matcher = difflib.SequenceMatcher(a=text1, b=text2)
+    if len(text1) > MIN_LINES and len(text2) > MIN_LINES:
+        rate = matcher.ratio()
+        if rate >= MIN_DIFF_RATE:
+            differ = difflib.Differ()
+            result = []
+            for line in differ.compare(text1, text2):
+                mark = line[:2]
+                if mark == '+ ' or mark == '- ':
+                    result.append(line)
+            result = '\n'.join(result)
+        else:
+            result = '(suppressed)'
     else:
-        result = '(suppressed)'
+        ratio = 0
+        result = '(to short)'
     dr = DiffResult(assignment=subm1.assignment, subm1=subm1, subm2=subm2,
             problem=problem.name, file1=fpath1, file2=fpath2, rate=rate, result=result)
     dr.save()
