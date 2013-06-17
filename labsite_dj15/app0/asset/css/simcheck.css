@@ -4,8 +4,8 @@ div.diff {
     border: 1px solid rgba(0, 0, 0, .2);
     border-radius: 3px;
     position: relative;
-    overflow: auto;
 }
+div.diff .wrapper { max-height: 400px; overflow: auto; }
 ins { background-color: #9ae78b; }
 del { background-color: #ff7b8b; }
 code.diff-content{ font-size: 80%; line-height: 110%;}

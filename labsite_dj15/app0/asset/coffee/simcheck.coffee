@@ -16,7 +16,7 @@ show_check_started = () ->
 
 new_diff_view = (diffResultPath) ->
   view = $('<div/>').addClass('diff')
-  button = $('<button/>').addClass('dismiss').html('dismiss')
+  button = $('<button/>').addClass('dismiss action warn').html('Close')
   button.click (event)->
     view.remove()
   view.append button
