@@ -2,8 +2,8 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 admin.autodiscover()
-from dajaxice.core import dajaxice_autodiscover, dajaxice_config
-dajaxice_autodiscover()
+# from dajaxice.core import dajaxice_autodiscover, dajaxice_config
+# dajaxice_autodiscover()
 from django.conf import settings
 
 urlpatterns = patterns('',
